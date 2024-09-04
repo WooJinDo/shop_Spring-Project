@@ -8,14 +8,14 @@ import lombok.extern.log4j.Log4j;
 
 @Controller
 @Log4j
-public class HomeController {
+public class MainController {
 	
 	
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/main.do", method = RequestMethod.GET)
 	public String home() {
 		log.info("메인페이지 접속");
 		
-		return "index";
+		return "main";
 	}
 	
 }
