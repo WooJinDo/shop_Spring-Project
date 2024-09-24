@@ -1,29 +1,31 @@
 package com.shop.persitence;
 
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.shop.mapper.TimeMapper;
-
-import lombok.extern.log4j.Log4j;
+import com.shop.model.MemberVO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
-public class TimeMapperTests {
-
+public class VoLombokTest {
+	
 	@Autowired
-	private TimeMapper timeMapper;
-	
+	private MemberVO vo2;
+		
 	@Test
-	public void testGetTime() {
-		System.out.println("timeMapper = " + timeMapper.getTime());
+	public void value() {
+		
+		vo2.setAddr("test");
+		vo2.setAddr_detail("상세주소");
+		System.out.println("==========================");
+		System.out.println(vo2);
+		System.out.println(vo2.getAddr());
+		System.out.println(vo2.getAddr_detail());
+
 	}
 	
-	@Test
-	public void testGetTime2() {
-		System.out.println("timeMapper22 = " + timeMapper.getTime2());
-	}
 }

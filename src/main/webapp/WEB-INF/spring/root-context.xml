@@ -9,7 +9,7 @@
 	
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
  		<!-- <property name="driverClassName" value="oracle.jdbc.pool.OracleDataSource"></property>
-		<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:orcl"></property> --> 
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:orcl"></property> -->
          <!-- Oracle 11g 경우 value="jdbc:oracle:thin:@URL주소:1521:XE" -->
          <!-- Oracle 19  경우 value="jdbc:oracle:thin:@URL주소:1521:orcl" -->
         <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
@@ -25,10 +25,42 @@
 	<!-- SqlSession setup for MyBatis Database Layer -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="datasource"></property>
+		
+		<!-- MyBatis는 SQL 쿼리를 Java 메서드와 연결하기 위해 -->
+		<property name="mapperLocations" value="classpath:/com/shop/mapper/*.xml" />
 	</bean>	
 	
-	<mybatis-spring:scan base-package="com.shop.mapper"/>
-	<context:component-scan base-package="com.shop.model"></context:component-scan>
-	<context:component-scan base-package="com.shop.service"></context:component-scan>
+	<!-- Jackson을 사용하기 위한 기본 설정 -->
+	<!-- <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+	    <property name="messageConverters">
+	        <list>
+	            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+	        </list>
+	    </property>
+	</bean> -->
+	
+    <!-- navermail설정 -->
+    <!-- '2차 인증' 사용 계정을 이용할 시 인증관련된 에러가 발생 -->
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> 
+     <property name="host" value="smtp.naver.com"/> <!-- 메이서버 호스트 -->
+     <property name="port" value="465"/> <!-- 메이서버 포트번호 -->
+     <property name="username" value="이메일 아이디"/> <!-- 자신의 이메일 아이디, SMTP 사용 권한을 얻어 오는 역할을 수행 -->
+     <property name="password" value="자신의 비밀번호"/> <!-- 자신의 비밀번호 -->
+       <!-- 보안연결 SSL과 관련된 설정 -->
+     <property name="javaMailProperties">
+      <props>
+      <prop key="mail.smtp.auth">true</prop>
+      <prop key="mail.smtp.starttls.enable">true</prop>
+      <prop key="mail.smtps.checkserveridentity">true</prop>
+      <prop key="mail.smtps.ssl.trust">*</prop>
+      <prop key="mail.debug">true</prop>
+      <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+      </props>
+     </property>
+    </bean>
+	
+	<mybatis-spring:scan base-package="com.shop.dao"/>
+	<context:component-scan base-package="com.shop.model"/>
+	<context:component-scan base-package="com.shop.service"/>
 	
 </beans>

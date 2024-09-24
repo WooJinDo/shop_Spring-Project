@@ -14,6 +14,9 @@
 	<logger name="com.shop.controller">
 		<level value="info" />
 	</logger>
+	<logger name="com.shop.service">
+		<level value="info" />
+	</logger>
 	
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
@@ -31,6 +34,32 @@
 	<logger name="org.springframework.web">
 		<level value="info" />
 	</logger>
+	
+	<!-- SQL Logger -->	
+	<logger name="jdbc.sqltiming" additivity="false">		
+		<level value="warn" />		
+		<appender-ref ref="console"/> 	
+	</logger>		
+
+	<logger name="jdbc.sqlonly" additivity="false"> 		
+		<level value="info"/> 		
+		<appender-ref ref="console"/> 	
+	</logger>		
+
+	<logger name="jdbc.audit" additivity="false"> 		
+		<level value="warn"/>  		
+		<appender-ref ref="console"/> 	
+	</logger>     	
+
+	<logger name="jdbc.resultset" additivity="false">		
+		<level value="warn" />		
+		<appender-ref ref="console"/> 	
+	</logger>     	
+
+	<logger name="jdbc.resultsettable" additivity="false"> 		
+		<level value="info"/>  		
+		<appender-ref ref="console"/> 	
+	</logger> 
 
 	<!-- Root Logger -->
 	<root>
