@@ -49,63 +49,80 @@
 								<div class="col-12" style="margin-bottom: 20px;">
 									<div class="form-group" style="margin-bottom: 0px;">
 										<label>아이디<span>*</span></label>
-										<input type="text" id="user_id" class="id_input" name="user_id" placeholder="" required="required">
+										<input type="text" id="user_id" class="id_input" name="user_id" placeholder="" >
 									</div>
 									<span class="id_input_msg"></span>
+									<span class="input_msg"></span>
 								</div>
 							
-								<div class="col-12">
-									<div class="form-group">
-										<label>비밀번호<span>*</span></label>
-										<input type="password" id="user_pw" name="user_pw" placeholder="" required="required">
-									</div>
-								</div>
-								<div class="col-12">
-									<div class="form-group">
-										<label>비밀번호 확인<span>*</span></label>
-										<input type="password" id="user_pw2" name="user_pw2" placeholder="" required="required">
-									</div>
-								</div>
-								<div class="col-12">
-									<div class="form-group">
-										<label>이름<span>*</span></label>
-										<input type="text" id="user_name" name="user_name" placeholder="" required="required">
-									</div>
-								</div>
 								<div class="col-12" style="margin-bottom: 20px;">
-									<div class="form-group">
+									<div class="form-group" style="margin-bottom: 0px;">
+										<label>비밀번호<span>*</span></label>
+										<input type="password" id="user_pw" name="user_pw" placeholder="" >
+									</div>
+									<span class="input_msg"></span>
+								</div>
+								
+								<div class="col-12" style="margin-bottom: 20px;">
+									<div class="form-group" style="margin-bottom: 0px;">
+										<label>비밀번호 확인<span>*</span></label>
+										<input type="password" id="confirm_password" placeholder="" >
+									</div>
+									<span class="input_msg"></span>
+								</div>
+								
+								<div class="col-12" style="margin-bottom: 20px;">
+									<div class="form-group" style="margin-bottom: 0px;">
+										<label>이름<span>*</span></label>
+										<input type="text" id="user_name" name="user_name" placeholder="" >
+									</div>
+									<span class="input_msg"></span>
+								</div>
+								
+								<div class="col-12" style="margin-bottom: 20px;">
+									<div class="form-group" style="margin-bottom: 0px;">
 										<label>Email<span>*</span></label>
 										<br/>
-										<input type="email" id="user_email" name="user_email" placeholder="" required="required">
+										<input type="email" id="user_email" name="user_email" placeholder="" >
 									</div>
+									<span class="input_msg"></span>
+								</div>
+								
+								<div class="col-12" style="margin-bottom: 20px;">
 									<div class="form-group" style="margin-bottom: 0px;">
-										<input type="text" id="emailChk_input" placeholder=""  style="width:65%; background-color: #cccccc38;" disabled="disabled" required="required">
+										<input type="text" id="emailChk_input" placeholder=""  style="width:65%; background-color: #cccccc38;" disabled="disabled" >
 										<button class="btn" id="emailChkBtn" type="button" style="width:30%; margin-left:10px;">인증번호 전송</button>
 									</div>
 									<span class="emailChk_input_msg"></span>
 								</div>
-								<div class="col-12">
-									<div class="form-group">
+								
+								<div class="col-12" style="margin-bottom: 20px;">
+									<div class="form-group" style="margin-bottom: 0px;">
 										<label>우편번호<span>*</span></label>
 										<br/>
-										<input type="text" id="post_no" name="post_no" placeholder="" style="width:65%;" required="required">
+										<input type="text" id="post_no" name="post_no" placeholder="" style="width:65%;" disabled="disabled" >
 										<button class="btn" onclick="execDaumPostcode()" type="button" style="width:30%; margin-left:10px;">우편번호 찾기</button>
 									</div>
-								</div>
-								<div class="col-12">
-									<div class="form-group">
-										<label>주소<span>*</span></label>
-										<input type="text" id="addr" name="addr" placeholder="" required="required">
-									</div>
-								</div>
-								<div class="col-12">
-									<div class="form-group">
-										<label>상세 주소<span>*</span></label>
-										<input type="text" id="addr_detail" name="addr_detail" placeholder="" required="required">
-									</div>
+									<span class="input_msg"></span>
 								</div>
 								
-								<div class="col-12">
+								<div class="col-12" style="margin-bottom: 20px;">
+									<div class="form-group" style="margin-bottom: 0px;">
+										<label>주소<span>*</span></label>
+										<input type="text" id="addr" name="addr" placeholder="" disabled="disabled" >
+									</div>
+									<span class="input_msg"></span>
+								</div>
+								
+								<div class="col-12" style="margin-bottom: 20px;">
+									<div class="form-group" style="margin-bottom: 0px;">
+										<label>상세 주소<span>*</span></label>
+										<input type="text" id="addr_detail" name="addr_detail" placeholder="" >
+									</div>
+									<span class="input_msg"></span>
+								</div>
+								
+								<div class="col-12" style="margin-bottom: 20px;">
 									<div class="form-group login-btn">
 										<button class="btn" type="submit" style="width:100%;">가입하기</button>
 									</div>
@@ -223,36 +240,36 @@ $(document).ready(function() {
 	var emailCode = "";	// 이메일 인증번호 저장
 	$('#emailChkBtn').on('click', function(){
 		var email = $('#user_email').val(); 	// 입력한 이메일
-		var emailChk = $('#emailChk_input'); 	// 인증번호 입력란
+		var $emailChk = $('#emailChk_input'); 	// 인증번호 입력란
 		
-		$.ajax({
-			  url: "/api/memberEmailChk",  			// 요청을 보낼 URL
-			  type: "GET",                          // HTTP 메서드 (GET, POST 등)
-			  dataType: "json",                     // 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
-			  data: {email : email},   				//쿼리 파라미터 형식
-			  success: function(response) {         // 성공 시 실행되는 함수
-				console.log(response);              // 응답 데이터 처리
-				emailChk.attr("disabled", false).css("background-color","#F6F7FB");
-				emailCode = response.emailNum;		// Json 데이터 추출
-				alert("해당 이메일로 인증번호가 전송되었습니다.");
-			  },
-			  error: function(xhr, status, error) { // 실패 시 실행되는 함수
-				console.error('Error:', error);     // 에러 처리
-				alert("이메일 인증 호출이 실패했습니다.");
-			  }
-		});
+		if(validateEmail()){					// 이메일 유효성 검사
+			$.ajax({
+				  url: "/api/memberEmailChk",  			// 요청을 보낼 URL
+				  type: "GET",                          // HTTP 메서드 (GET, POST 등)
+				  dataType: "json",                     // 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
+				  data: {email : email},   				//쿼리 파라미터 형식
+				  success: function(response) {         // 성공 시 실행되는 함수
+					//console.log(response);              // 응답 데이터 처리
+					$emailChk.attr("disabled", false).css("background-color","#F6F7FB");
+					emailCode = response.emailNum;		// Json 데이터 추출
+					alert("해당 이메일로 인증번호가 전송되었습니다.");
+				  },
+				  error: function(xhr, status, error) { // 실패 시 실행되는 함수
+					console.error('Error:', error);     // 에러 처리
+					alert("이메일 인증 호출이 실패했습니다.");
+				  }
+			});
+		}
 	});
 	
 	/* 인증번호 비교 */
 	$('#emailChk_input').on('blur', function(){
 		var emailChk = $('#emailChk_input').val(); 	// 인증번호 값
-		
 		if(emailChk == emailCode){	// 인증번호 비교
 			$('.emailChk_input_msg').text('인증번호가 일치합니다.').css("display","inline-block").css('color', 'green');	
 		}else{
 			$('.emailChk_input_msg').text('인증번호를 다시 확인해주세요.').css("display", "inline-block").css('color', 'red');	
 		}
-		
 	});
 	
 	/* 회원 중복 확인 */
@@ -260,29 +277,32 @@ $(document).ready(function() {
 	$('.id_input').on("input", function(){
 		clearTimeout(debounceTimer);  				// 이벤트가 다시 발생할 때 이전 타이머를 제거
 		var data = {user_id: $('#user_id').val()};	// 폼 데이터를 객체로 변환
-	
-		debounceTimer = setTimeout(function() {		// 새로운 타이머 설정(지속적으로 이벤트를 발생시키는 상황에서 이벤트 호출을 지연)
-		$.ajax({
-		  	  url: "/api/memberIdChk",  		    // 요청을 보낼 URL
-			  type: "POST",                         // HTTP 메서드 (GET, POST 등)
-			  dataType: "json",                     // 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
-			  contentType: 'application/json; charset=utf-8',     // 콘텐츠 타입을 JSON으로 설정 - 클라이언트(브라우저)에서 서버로 보내는 데이터의 형식
-			  data: JSON.stringify(data),   		// 직렬화된 데이터를 JSON 형식으로 변환
-			  success: function(response) {         // 성공 시 실행되는 함수
-				console.log(response);              // 응답 데이터 처리
-				if(response.idChk == 'Y'){
-					$('.id_input_msg').text('사용 가능한 아이디입니다.').css("display","inline-block").css('color', 'green');
-				}else{
-					$('.id_input_msg').text('이미 존재하는 아이디입니다.').css("display", "inline-block").css('color', 'red');
-				}
-			  },
-			  error: function(xhr, status, error) { // 실패 시 실행되는 함수
-				console.error('Error:', error);     // 에러 처리
-				alert("중복 확인을 실패했습니다.");
-			  }
-		});
 		
-		}, 800);  // 사용자가 800ms 동안 입력을 멈출 때만 서버로 요청
+		$('.id_input_msg').text('').removeAttr('style');	// text 초기화 및 모든 인라인 스타일 제거
+		if(validateUserId()) {							// 아이디 유효성 검사
+			debounceTimer = setTimeout(function() {		// 새로운 타이머 설정(지속적으로 이벤트를 발생시키는 상황에서 이벤트 호출을 지연)
+				$.ajax({
+					  url: "/api/memberIdChk",  		    // 요청을 보낼 URL
+					  type: "POST",                         // HTTP 메서드 (GET, POST 등)
+					  dataType: "json",                     // 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
+					  contentType: 'application/json; charset=utf-8',     // 콘텐츠 타입을 JSON으로 설정 - 클라이언트(브라우저)에서 서버로 보내는 데이터의 형식
+					  data: JSON.stringify(data),   		// 직렬화된 데이터를 JSON 형식으로 변환
+					  success: function(response) {         // 성공 시 실행되는 함수
+						console.log(response);              // 응답 데이터 처리
+						if(response.idChk == 'Y'){
+							$('.id_input_msg').text('사용 가능한 아이디입니다.').css("display","inline-block").css('color', 'green');
+						}else{
+							$('.id_input_msg').text('이미 존재하는 아이디입니다.').css("display", "inline-block").css('color', 'red');
+						}
+					  },
+					  error: function(xhr, status, error) { // 실패 시 실행되는 함수
+						console.error('Error:', error);     // 에러 처리
+						alert("중복 확인을 실패했습니다.");
+					  }
+				});
+			
+			}, 800);  // 사용자가 800ms 동안 입력을 멈출 때만 서버로 요청
+		}
 
 	});
 
@@ -290,34 +310,211 @@ $(document).ready(function() {
 	$("#registerForm").on('submit',function(e) {
 		e.preventDefault();  // 폼 제출이 기본적으로 새로고침을 유발하므로, 이를 방지하기 위해
 		
-		// 폼 데이터를 객체로 변환
-		var formData = {
-			user_id: $('#user_id').val()
-			, user_pw: $('#user_pw').val()
-			, user_name: $('#user_name').val()
-			, user_email: $('#user_email').val()
-			, post_no: $('#post_no').val()
-			, addr: $('#addr').val()
-			, addr_detail: $('#addr_detail').val()
-		};
-		
-		$.ajax({
-			  url: "/api/register",  				// 요청을 보낼 URL
-			  type: "POST",                         // HTTP 메서드 (GET, POST 등)
-			  dataType: "json",                     // 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
-			  contentType: 'application/json; charset=utf-8',     // 콘텐츠 타입을 JSON으로 설정 - 클라이언트(브라우저)에서 서버로 보내는 데이터의 형식
-			  data: JSON.stringify(formData),   	// 직렬화된 데이터를 JSON 형식으로 변환
-			  success: function(response) {         // 성공 시 실행되는 함수
-				console.log(response);              // 응답 데이터 처리
-				alert('회원 가입을 완료했습니다. 로그인 후 이용해주세요.');
-				location.href = '/member/login';
-			  },
-			  error: function(xhr, status, error) { // 실패 시 실행되는 함수
-				console.error('Error:', error);     // 에러 처리
-				alert("회원 가입에 실패했습니다.");
-			  }
-		}); 
+		// 폼 제출 성공여부
+		if(validateForm()) {
+	       console.log('폼 제출 성공');
+		       
+			// 폼 데이터를 객체로 변환
+			var formData = {
+				user_id: $('#user_id').val()
+				, user_pw: $('#user_pw').val()
+				, user_name: $('#user_name').val()
+				, user_email: $('#user_email').val()
+				, post_no: $('#post_no').val()
+				, addr: $('#addr').val()
+				, addr_detail: $('#addr_detail').val()
+			};
+			
+			$.ajax({
+				  url: "/api/register",  				// 요청을 보낼 URL
+				  type: "POST",                         // HTTP 메서드 (GET, POST 등)
+				  dataType: "json",                     // 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
+				  contentType: 'application/json; charset=utf-8',     // 콘텐츠 타입을 JSON으로 설정 - 클라이언트(브라우저)에서 서버로 보내는 데이터의 형식
+				  data: JSON.stringify(formData),   	// 직렬화된 데이터를 JSON 형식으로 변환
+				  success: function(response) {         // 성공 시 실행되는 함수
+					console.log(response);              // 응답 데이터 처리
+					alert('회원 가입을 완료했습니다. 로그인 후 이용해주세요.');
+					location.href = '/member/login';
+				  },
+				  error: function(xhr, status, error) { // 실패 시 실행되는 함수
+					console.error('Error:', error);     // 에러 처리
+					alert("회원 가입에 실패했습니다.");
+				  }
+			}); 
+		}
 	});
+	
+	// 전체 폼 유효성 검사
+	function validateForm() {
+        var isValid = true;
+        
+		isValid = validateUserId() && isValid;
+        isValid = validateUserName() && isValid;
+        isValid = validateEmail() && isValid;
+        isValid = validatePassword() && isValid;
+        isValid = validateConfirmPassword() && isValid;
+        isValid = validatePostNo() && isValid;
+        isValid = validateAddr() && isValid;
+        isValid = validateAddrDetail() && isValid;
+        
+        return isValid;
+    }
+	
+	// 사용자 아이디 유효성 검사
+    function validateUserId() {
+		var $userId = $('#user_id');				// jQuery로 선택한 요소라는 의미
+		var userIdValue = $userId.val().trim();
+		if(userIdValue === '') {
+			setErrorFor($userId, '아이디를 입력해주세요.');
+			return false;
+		} else if(userIdValue.length < 3 || userIdValue.length > 15) {
+			setErrorFor($userId, '아이디는 3자 이상 15자 이하이어야 합니다.'); //3-15자
+			return false;
+		} else if(!isValidUserId(userIdValue)) {
+			setErrorFor($userId, '아이디는 숫자, 영어를 포함해야 합니다.');
+			return false;
+		}
+		else {
+			setSuccessFor($userId);
+			return true;
+		}
+	}
+	
+	// 비밀번호 유효성 검사
+    function validatePassword() {
+        var $password = $('#user_pw');
+        var passwordValue = $password.val().trim();
+        if(passwordValue === '') {
+            setErrorFor($password, '비밀번호를 입력해주세요.');
+            return false;
+        } else if(passwordValue.length < 8) {
+            setErrorFor($password, '비밀번호는 8자 이상이어야 합니다.');
+            return false;
+        } else if(!isValidPassword(passwordValue)) {
+            setErrorFor($password, '비밀번호는 숫자, 소문자, 대문자를 포함해야 합니다.');
+            return false;
+        } else {
+            setSuccessFor($password);
+            return true;
+        }
+    }
+
+    // 비밀번호 확인 유효성 검사
+    function validateConfirmPassword() {
+        var $password = $('#user_pw');
+        var $confirmPassword = $('#confirm_password');
+        var passwordValue = $password.val().trim();
+        var confirmPasswordValue = $confirmPassword.val().trim();
+        if(confirmPasswordValue === '') {
+            setErrorFor($confirmPassword, '비밀번호 확인을 입력해주세요.');
+            return false;
+        } else if(confirmPasswordValue !== passwordValue) {
+            setErrorFor($confirmPassword, '비밀번호가 일치하지 않습니다.');
+            return false;
+        } else{
+            setSuccessFor($confirmPassword);
+            return true;
+        }
+    }
+
+    // 사용자명 유효성 검사
+    function validateUserName() {
+        var $username = $('#user_name');
+        var usernameValue = $username.val().trim();
+        if(usernameValue === '') {
+            setErrorFor($username, '사용자명을 입력해주세요.');
+            return false;
+        } else if(usernameValue.length < 2) {
+            setErrorFor($username, '사용자명은 2자 이상이어야 합니다.');
+            return false;
+        } else{
+            setSuccessFor($username);
+            return true;
+        }
+    }
+
+    // 이메일 유효성 검사
+    function validateEmail() {
+        var $email = $('#user_email');
+        var emailValue = $email.val().trim();
+        if(emailValue === '') {
+            setErrorFor($email, '이메일을 입력해주세요.');
+            return false;
+        } else if(!isValidEmail(emailValue)) {
+            setErrorFor($email, '유효한 이메일 주소를 입력해주세요.');
+            return false;
+        } else{
+            setSuccessFor($email);
+            return true;
+        }
+    }
+    
+ 	// 주소 유효성 검사
+    function validatePostNo() {
+        var $postNo = $('#post_no');
+        var postNoValue = $postNo.val().trim();
+        if(postNoValue === '') {
+            setErrorFor($postNo, '우편번호를 입력해주세요.');
+            return false;
+        } else{
+            setSuccessFor($postNo);
+            return true;
+        }
+    }
+ 	
+    function validateAddr() {
+        var $addr = $('#addr');
+        var addrValue = $addr.val().trim();
+        if(addrValue === '') {
+            setErrorFor($addr, '주소를 입력해주세요.');
+            return false;
+        } else{
+            setSuccessFor($addr);
+            return true;
+        }
+    }
+    
+    function validateAddrDetail() {
+        var $addrDetail = $('#addr_detail');
+        var addrDetailValue = $addrDetail.val().trim();
+        if(addrDetailValue === '') {
+            setErrorFor($addrDetail, '상세주소를 입력해주세요.');
+            return false;
+        } else{
+            setSuccessFor($addrDetail);
+            return true;
+        }
+    }
+
+    // 오류 메시지 설정 함수
+    function setErrorFor($input, message) {
+        var $formControl = $input.parent().parent();
+        $formControl.find('.input_msg').text(message).css("display","inline-block").css('color', 'red');
+    }
+
+    // 성공 표시 설정 함수
+    function setSuccessFor($input) {
+    	var $formControl = $input.parent().parent();
+        $formControl.find('.input_msg').text('').removeAttr('style');
+    }
+	
+	// 아이디 유효성 검사 함수
+    function isValidUserId(userId) {
+        var regex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]+$/; // 영문자, 숫자를 포함
+        return regex.test(userId);	 // .test(): 정규표현식(RegExp) 객체에서 사용되는 메서드입니다. 이 메서드는 주어진 문자열이 정규표현식과 일치하는지 검사
+    }
+	
+ 	// 비밀번호 유효성 검사 함수
+    function isValidPassword(password) {
+        var regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/;  // 숫자, 소문자, 대문자를 포함
+        return regex.test(password);
+    }
+
+    // 이메일 형식 검사 함수
+    function isValidEmail(email) {
+    	var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;  
+        return regex.test(email);
+    }
 });
 </script>
 
