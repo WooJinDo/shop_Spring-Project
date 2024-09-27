@@ -42,7 +42,7 @@
 				<div class="col-lg-6 offset-lg-3 col-12">
 					<div class="login-form">
 						<h2>회원가입</h2>
-						<p>더 빠른 결제를 위해 등록해 주세요</p>
+						<p>보다 빠른 결제를 위해 회원가입을 해주세요</p>
 						<!-- Form -->
 						<form id="registerForm" class="form">
 							<div class="row">
@@ -90,7 +90,7 @@
 								
 								<div class="col-12" style="margin-bottom: 20px;">
 									<div class="form-group" style="margin-bottom: 0px;">
-										<input type="text" id="emailChk_input" placeholder=""  style="width:65%; background-color: #cccccc38;" disabled="disabled" >
+										<input type="text" id="emailChk_input" placeholder="" style="width:65%; background-color: #cccccc38;" maxlength="6" disabled="disabled" >
 										<button class="btn" id="emailChkBtn" type="button" style="width:30%; margin-left:10px;">인증번호 전송</button>
 									</div>
 									<span class="emailChk_input_msg"></span>
@@ -262,16 +262,6 @@ $(document).ready(function() {
 		}
 	});
 	
-	/* 인증번호 비교 */
-	$('#emailChk_input').on('blur', function(){
-		var emailChk = $('#emailChk_input').val(); 	// 인증번호 값
-		if(emailChk == emailCode){	// 인증번호 비교
-			$('.emailChk_input_msg').text('인증번호가 일치합니다.').css("display","inline-block").css('color', 'green');	
-		}else{
-			$('.emailChk_input_msg').text('인증번호를 다시 확인해주세요.').css("display", "inline-block").css('color', 'red');	
-		}
-	});
-	
 	/* 회원 중복 확인 */
 	var debounceTimer;	// 함수 바깥에 선언하면, 입력 이벤트 간에 타이머를 공유할 수 있어 중복된 서버 요청을 방지
 	$('.id_input').on("input", function(){
@@ -346,11 +336,12 @@ $(document).ready(function() {
 	
 	// 전체 폼 유효성 검사
 	function validateForm() {
-        var isValid = true;
+		var isValid = true;
         
 		isValid = validateUserId() && isValid;
         isValid = validateUserName() && isValid;
         isValid = validateEmail() && isValid;
+        isValid = validateEmailChk() && isValid;
         isValid = validatePassword() && isValid;
         isValid = validateConfirmPassword() && isValid;
         isValid = validatePostNo() && isValid;
@@ -449,6 +440,26 @@ $(document).ready(function() {
         }
     }
     
+ 	// 이메일 인증번호 비교 - blur 이벤트를 통해 실시간 인증번호 검사
+	$('#emailChk_input').on('blur', function(){
+		validateEmailChk();
+	});
+    
+	// 이메일 인증번호 비교
+	function validateEmailChk() {
+		var emailChk = $('#emailChk_input').val().trim(); 	// 인증번호 값
+		if(emailChk == ''){	// 인증번호 비교
+			$('.emailChk_input_msg').text('인증번호를 입력해주세요.').css("display", "inline-block").css('color', 'red');
+			return false;
+		} else if(emailChk != emailCode){ 
+			$('.emailChk_input_msg').text('인증번호를 다시 확인해주세요.').css("display", "inline-block").css('color', 'red');	
+			return false;
+		} else{
+			$('.emailChk_input_msg').text('인증번호가 일치합니다.').css("display","inline-block").css('color', 'green');	
+			return true;
+		}
+	}
+ 
  	// 주소 유효성 검사
     function validatePostNo() {
         var $postNo = $('#post_no');
