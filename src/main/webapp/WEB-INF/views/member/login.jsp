@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -41,32 +42,35 @@
 			<div class="row"> 
 				<div class="col-lg-6 offset-lg-3 col-12">
 					<div class="login-form">
-						<h2>Login</h2>
-						<p>Please register in order to checkout more quickly</p>
+						<h2>로그인</h2>
+						<p>보다 빠른 결제를 위해 회원가입을 해주세요</p>
 						<!-- Form -->
-						<form class="form" method="post" action="#">
+						<form class="form" method="post" action="/member/login">
 							<div class="row">
 								<div class="col-12">
 									<div class="form-group">
-										<label>Your Email<span>*</span></label>
-										<input type="email" name="email" placeholder="" required="required">
+										<label>아이디<span>*</span></label>
+										<input type="text" name="user_id" placeholder="" required="required">
 									</div>
 								</div>
-								<div class="col-12">
-									<div class="form-group">
-										<label>Your Password<span>*</span></label>
-										<input type="password" name="password" placeholder="" required="required">
+								<div class="col-12" style="margin-bottom: 20px;">
+									<div class="form-group" style="margin-bottom: 0px;">
+										<label>비밀번호<span>*</span></label>
+										<input type="password" name="user_pw" placeholder="" required="required">
 									</div>
+									<c:if test="${not empty error}">
+										<span style="color:red;">${error}</span>
+									</c:if>
 								</div>
 								<div class="col-12">
 									<div class="form-group login-btn">
-										<button class="btn" type="submit">Login</button>
-										<a href="/member/register" class="btn">Register</a>
+										<button class="btn" type="submit">로그인</button>
+										<a href="/member/register" class="btn">회원가입</a>
 									</div>
-									<div class="checkbox">
+									<!-- <div class="checkbox">
 										<label class="checkbox-inline" for="2"><input name="news" id="2" type="checkbox">Remember me</label>
 									</div>
-									<a href="#" class="lost-pass">Lost your password?</a>
+									<a href="#" class="lost-pass">Lost your password?</a> -->
 								</div>
 							</div>
 						</form>

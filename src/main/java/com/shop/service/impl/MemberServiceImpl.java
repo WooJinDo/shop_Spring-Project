@@ -7,6 +7,7 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.shop.dao.MemberMapper;
@@ -26,12 +27,35 @@ public class MemberServiceImpl implements MemberService {
 	@Autowired
     private JavaMailSender mailSender;
 	
-	//회원 등록
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+	
+	/* 
+	 * 로그인 
+	 */
+	@Override
+	public MemberDto.MemberLoginResponse login(MemberDto.MemberLoginRequest request) throws Exception {
+	  	MemberVO vo = memberMapper.login(request.getUser_id().trim());
+	  	
+	  	if(vo == null || !passwordEncoder.matches(request.getUser_pw().trim(), vo.getUser_pw())) {
+	  		// 보안을 위해 사용자가 존재하지 않는 경우에도 비밀번호 검증을 수행
+	  		passwordEncoder.matches("dummy", "$2a$10$dummyHash");
+	  		return MemberDto.MemberLoginResponse.failure("아이디 혹은 비밀번호가 일치하지 않습니다.", false);
+	  	}
+	  	return MemberDto.MemberLoginResponse.success(vo, true);
+	}
+	
+	/*
+	 * 회원 등록
+	 */	
 	@Override
 	public MemberDto.MemberResponse insert(MemberDto.MemberRequest request) throws Exception {
+		// password 암호화
+        String encPassword = passwordEncoder.encode(request.getUser_pw().trim());
+        
 		MemberVO vo = MemberVO.builder()
 				.user_id(request.getUser_id().trim())
-				.user_pw(request.getUser_pw().trim())
+				.user_pw(encPassword)
 				.user_name(request.getUser_name().trim())
 				.user_email(request.getUser_email().trim())
 				.post_no(request.getPost_no())
@@ -45,7 +69,9 @@ public class MemberServiceImpl implements MemberService {
 		return MemberDto.MemberResponse.from(true);
 	}
 
-	//회원 중복 확인
+	/*
+	 * 회원 중복 확인
+	 */	
 	@Override
 	public MemberDto.MemberIdChkResponse memberIdChk(String userId) throws Exception {
 		int i = memberMapper.memberIdChk(userId);
@@ -55,7 +81,9 @@ public class MemberServiceImpl implements MemberService {
 		return MemberDto.MemberIdChkResponse.from("Y");	//사용가능한 아이디
 	}
 	
-	//이메일 인증
+	/*
+	 * 이메일 인증
+	 */	
 	@Override
 	public MemberDto.MemberEmailChkResponse memberEmailChk(String email) {
 		/* 인증번호 난수생성 */

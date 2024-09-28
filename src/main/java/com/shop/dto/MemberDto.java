@@ -1,5 +1,7 @@
 package com.shop.dto;
 
+import com.shop.model.MemberVO;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +9,44 @@ import lombok.ToString;
 
 public class MemberDto {
 	
+	//로그인 - 요청
+	@Getter @Setter
+	@ToString
+	public static class MemberLoginRequest{
+		//회원 ID
+		private String user_id;
+		
+		//회원 비밀번호
+		private String user_pw;
+	}
+	
+	//로그인 - 결과
+	@Getter @Setter
+	@Builder
+	public static class MemberLoginResponse{
+		private String user_id;
+		private String user_name;
+		private String admin_ck;
+		private String msg;
+		private boolean success;
+		
+		public static MemberLoginResponse success(MemberVO vo, boolean success) {
+			return MemberLoginResponse.builder()
+					.user_id(vo.getUser_id())
+					.user_name(vo.getUser_name())
+					.admin_ck(vo.getAdmin_ck())
+					.success(success)
+					.build();
+		}
+		
+		public static MemberLoginResponse failure(String msg, boolean success) {
+			return MemberLoginResponse.builder()
+					.msg(msg)
+					.success(success)
+					.build();
+		}
+	}
+		
 	//회원 등록 - 요청
 	@Getter @Setter
 	@ToString

@@ -3,6 +3,23 @@
 
 <mapper namespace="com.shop.dao.MemberMapper">
 
+	<!-- 로그인 -->
+	 <select id="login" parameterType="String" resultType="com.shop.model.MemberVO">
+		 SELECT USER_ID
+ 			, USER_PW
+ 			, USER_NAME
+ 			, USER_EMAIL
+ 			, POST_NO
+ 			, ADDR
+ 			, ADDR_DETAIL
+ 			, ADMIN_CK
+ 			, REG_DATE
+ 			, MONEY
+ 			, POINT 
+		FROM MEMBER
+		WHERE USER_ID = TRIM(#{userId})
+	 </select>
+	 
  	<!-- 회원가입 등록 -->
 	 <insert id="insert" parameterType="com.shop.model.MemberVO">
 	 	INSERT INTO MEMBER
@@ -40,6 +57,6 @@
 	 <select id="memberIdChk" parameterType="String" resultType="Integer">
 		 SELECT COUNT(*) 
 		 FROM MEMBER
-		 WHERE USER_ID = TRIM(#{user_id})
+		 WHERE USER_ID = TRIM(#{userId})
 	 </select>
 </mapper>
