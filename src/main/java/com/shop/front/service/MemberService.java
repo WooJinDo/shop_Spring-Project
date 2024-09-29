@@ -1,9 +1,6 @@
-package com.shop.service;
+package com.shop.front.service;
 
-import com.shop.dto.MemberDto;
-import com.shop.model.MemberVO;
-
-import lombok.extern.log4j.Log4j;
+import com.shop.front.dto.MemberDto;
 
 public interface MemberService {
 	

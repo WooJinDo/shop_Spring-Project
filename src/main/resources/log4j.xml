@@ -11,10 +11,10 @@
 	</appender>
 	
 	<!-- Application Loggers -->
-	<logger name="com.shop.controller">
+	<!-- <logger name="com.shop.controller">
 		<level value="info" />
-	</logger>
-	<logger name="com.shop.service">
+	</logger> -->
+	<logger name="com.shop">
 		<level value="info" />
 	</logger>
 	

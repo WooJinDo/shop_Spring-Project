@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
 <!DOCTYPE HTML>
 <html>
 
@@ -35,10 +35,29 @@
 					<!-- Top Right -->
 					<div class="right-content">
 						<ul class="list-main">
-							<li><i class="ti-location-pin"></i> Store location</li>
-							<li><i class="ti-alarm-clock"></i> <a href="#">Daily deal</a></li>
-							<li><i class="ti-user"></i> <a href="#">My account</a></li>
-							<li><i class="ti-power-off"></i><a href="/member/login">Login</a></li>
+							<!-- <li><i class="ti-location-pin"></i> Store location</li> -->
+							<!-- <li><i class="ti-alarm-clock"></i> <a href="#">Daily deal</a></li> -->
+							<c:choose>
+								<c:when test="${empty sessionScope.userId}">
+									<!-- 로그인하지 않은 메뉴들 -->
+									<li><i class="ti-power-off"></i><a href="/member/login">로그인</a></li>
+									<li><i class="ti-power-off"></i><a href="/member/register">회원가입</a></li>
+								</c:when>
+								<c:otherwise>
+									<!-- 로그인한 메뉴들 -->
+									<c:if test="${sessionScope.role eq 'USER'}">
+										<li><i class="ti-user"></i> <a href="#">내 정보</a></li>
+										<li><i class="ti-user"></i> <a href="#">장바구니</a></li>
+									</c:if>
+									
+									<c:if test="${sessionScope.role eq 'ADMIN'}">
+										<li><i class="ti-user"></i> <a href="#">회원 관리</a></li>
+										<li><i class="ti-user"></i> <a href="#">상품 관리</a></li>
+									</c:if>
+									
+									<li><i class="ti-user"></i> <a href="/member/logout">로그아웃</a></li>
+								</c:otherwise>
+							</c:choose>
 						</ul>
 					</div>
 					<!-- End Top Right -->
@@ -53,7 +72,7 @@
 				<div class="col-lg-2 col-md-2 col-12">
 					<!-- Logo -->
 					<div class="logo">
-						<a href="index.html"><img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="logo"></a>
+						<a href="/"><img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="logo"></a>
 					</div>
 					<!--/ End Logo -->
 					<!-- Search Form -->

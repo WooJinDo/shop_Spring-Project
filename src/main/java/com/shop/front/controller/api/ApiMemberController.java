@@ -1,4 +1,4 @@
-package com.shop.controller.api;
+package com.shop.front.controller.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shop.dto.MemberDto;
-import com.shop.service.MemberService;
+import com.shop.front.dto.MemberDto;
+import com.shop.front.service.MemberService;
 
 import lombok.extern.log4j.Log4j;
 

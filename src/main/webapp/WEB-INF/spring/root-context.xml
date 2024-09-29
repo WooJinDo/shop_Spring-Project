@@ -59,9 +59,12 @@
      </property>
     </bean>
 	
-	<mybatis-spring:scan base-package="com.shop.dao"/>
-	<context:component-scan base-package="com.shop.config"/>
-	<context:component-scan base-package="com.shop.model"/>
-	<context:component-scan base-package="com.shop.service"/>
+	<mybatis-spring:scan base-package="com.shop.front.dao"/>
+	<context:component-scan base-package="com.shop.front"/>
+	<context:component-scan base-package="com.shop.back"/>
+	<!-- 
+	<context:component-scan base-package="com.shop.front.model"/>
+	<context:component-scan base-package="com.shop.front.service"/> 
+	-->
 	
 </beans>

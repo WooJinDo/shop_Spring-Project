@@ -1,6 +1,6 @@
-package com.shop.dto;
+package com.shop.front.dto;
 
-import com.shop.model.MemberVO;
+import com.shop.front.model.MemberVO;
 
 import lombok.Builder;
 import lombok.Getter;

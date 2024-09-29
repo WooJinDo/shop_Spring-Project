@@ -1,6 +1,6 @@
-package com.shop.dao;
+package com.shop.front.dao;
 
-import com.shop.model.MemberVO;
+import com.shop.front.model.MemberVO;
 
 /*DAO 역할 = data access object*/
 public interface MemberMapper {

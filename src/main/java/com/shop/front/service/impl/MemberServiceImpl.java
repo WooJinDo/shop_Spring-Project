@@ -1,4 +1,4 @@
-package com.shop.service.impl;
+package com.shop.front.service.impl;
 
 import java.util.Random;
 
@@ -10,10 +10,10 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.shop.dao.MemberMapper;
-import com.shop.dto.MemberDto;
-import com.shop.model.MemberVO;
-import com.shop.service.MemberService;
+import com.shop.front.dao.MemberMapper;
+import com.shop.front.dto.MemberDto;
+import com.shop.front.model.MemberVO;
+import com.shop.front.service.MemberService;
 
 import lombok.extern.log4j.Log4j;
 
