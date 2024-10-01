@@ -41,13 +41,14 @@
 								<c:when test="${empty sessionScope.userId}">
 									<!-- 로그인하지 않은 메뉴들 -->
 									<li><i class="ti-power-off"></i><a href="/member/login">로그인</a></li>
-									<li><i class="ti-power-off"></i><a href="/member/register">회원가입</a></li>
+									<li><i class="ti-plus"></i><a href="/member/register">회원가입</a></li>
 								</c:when>
 								<c:otherwise>
 									<!-- 로그인한 메뉴들 -->
 									<c:if test="${sessionScope.role eq 'USER'}">
-										<li><i class="ti-user"></i> <a href="#">내 정보</a></li>
-										<li><i class="ti-user"></i> <a href="#">장바구니</a></li>
+										<li><i class="fa fa-heart-o" aria-hidden="true"></i> <a href="#">찜한상품</a></li>
+										<li><i class="fa fa-user-circle-o" aria-hidden="true"></i> <a href="#">내 정보</a></li>
+										<li><i class="ti-bag"></i> <a href="/user/register">장바구니</a></li>
 									</c:if>
 									
 									<c:if test="${sessionScope.role eq 'ADMIN'}">
@@ -55,7 +56,7 @@
 										<li><i class="ti-user"></i> <a href="#">상품 관리</a></li>
 									</c:if>
 									
-									<li><i class="ti-user"></i> <a href="/member/logout">로그아웃</a></li>
+									<li><i class="ti-unlock"></i> <a href="/member/logout">로그아웃</a></li>
 								</c:otherwise>
 							</c:choose>
 						</ul>
@@ -109,15 +110,15 @@
 				<div class="col-lg-2 col-md-3 col-12">
 					<div class="right-bar">
 						<!-- Search Form -->
-						<div class="sinlge-bar">
+						<!-- <div class="sinlge-bar">
 							<a href="#" class="single-icon"><i class="fa fa-heart-o" aria-hidden="true"></i></a>
 						</div>
 						<div class="sinlge-bar">
 							<a href="#" class="single-icon"><i class="fa fa-user-circle-o" aria-hidden="true"></i></a>
-						</div>
-						<div class="sinlge-bar shopping">
+						</div> -->
+						<!-- <div class="sinlge-bar shopping">
 							<a href="#" class="single-icon"><i class="ti-bag"></i> <span class="total-count">2</span></a>
-							<!-- Shopping Item -->
+							Shopping Item
 							<div class="shopping-item">
 								<div class="dropdown-cart-header">
 									<span>2 Items</span>
@@ -145,8 +146,8 @@
 									<a href="checkout.html" class="btn animate">Checkout</a>
 								</div>
 							</div>
-							<!--/ End Shopping Item -->
-						</div>
+							End Shopping Item
+						</div> -->
 					</div>
 				</div>
 			</div>

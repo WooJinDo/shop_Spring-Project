@@ -12,7 +12,7 @@
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
 
-	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<!-- 정적 리소스 핸들링 -->
 	<resources mapping="/resources/**" location="/resources/" />
 
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
@@ -21,6 +21,21 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
+	<!-- 패키지 스캔 설정 -->
 	<context:component-scan base-package="com.shop.front.controller" />
+	<context:component-scan base-package="com.shop.back.controller" />
+	
+	<!-- 인터셉터 설정 -->
+    <interceptors>
+        <interceptor>
+            <mapping path="/admin/**" />
+            <mapping path="/user/**" />
+            <beans:bean id="AuthenticationInterceptor" class="com.shop.interceptor.AuthenticationInterceptor" />
+        </interceptor>
+        <interceptor>
+            <mapping path="/**" />
+            <beans:bean id="SessionTimeoutInterceptor.java" class="com.shop.interceptor.SessionTimeoutInterceptor" />
+        </interceptor>
+    </interceptors>
 	
 </beans:beans>

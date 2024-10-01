@@ -61,6 +61,8 @@
 	
 	<mybatis-spring:scan base-package="com.shop.front.dao"/>
 	<context:component-scan base-package="com.shop.front"/>
+	<context:component-scan base-package="com.shop.interceptor"/>
+	<context:component-scan base-package="com.shop.config"/>
 	<context:component-scan base-package="com.shop.back"/>
 	<!-- 
 	<context:component-scan base-package="com.shop.front.model"/>
