@@ -45,15 +45,14 @@
 								</c:when>
 								<c:otherwise>
 									<!-- 로그인한 메뉴들 -->
-									<c:if test="${sessionScope.role eq 'USER'}">
+									<c:if test="${sessionScope.role eq 'USER' || sessionScope.role eq 'ADMIN'}">
 										<li><i class="fa fa-heart-o" aria-hidden="true"></i> <a href="#">찜한상품</a></li>
 										<li><i class="fa fa-user-circle-o" aria-hidden="true"></i> <a href="#">내 정보</a></li>
 										<li><i class="ti-bag"></i> <a href="/user/register">장바구니</a></li>
 									</c:if>
 									
 									<c:if test="${sessionScope.role eq 'ADMIN'}">
-										<li><i class="ti-user"></i> <a href="#">회원 관리</a></li>
-										<li><i class="ti-user"></i> <a href="#">상품 관리</a></li>
+										<li><i class="ti-shift-left"></i> <a href="/admin/main">관리자페이지 이동</a></li>
 									</c:if>
 									
 									<li><i class="ti-unlock"></i> <a href="/member/logout">로그아웃</a></li>

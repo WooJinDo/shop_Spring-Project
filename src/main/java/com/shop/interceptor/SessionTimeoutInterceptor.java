@@ -24,7 +24,7 @@ public class SessionTimeoutInterceptor implements HandlerInterceptor {
 		 */
 		HttpSession session = request.getSession(false);
 		
-		// StringUtils.isNotBlank() - 문자열이 null, 빈 문자열, 또는 공백 문자열인지 확인
+		// StringUtils.isNotBlank() - 문자열이 null, 빈 문자열, 또는 공백이 아니여야함
 		if(session != null && StringUtils.isNotBlank((String)session.getAttribute("userId"))) {
 			long lastAccessedTime = session.getLastAccessedTime();	// 마지막으로 접근한 시간
             long currentTime = System.currentTimeMillis();			// 현재 시간
@@ -33,7 +33,9 @@ public class SessionTimeoutInterceptor implements HandlerInterceptor {
             // 마지막 접근 이후 30분을 초과 했을 경우
             if (timeSinceLastAccess > MAX_INACTIVE_INTERVAL * 1000) { 
             	log.info("일정시간 동안 활동이 없어 세션이 만료 되었습니다");
-                session.invalidate();								 // 세션을 무효화
+            	session.invalidate(); // 세션 만료
+            	//getSession()은 항상 세션을 반환, 만약 세션이 존재하지 않으면 새 세션을 생성
+                request.getSession().setAttribute("flashMsg", "일정시간 동안 활동이 없어 세션이 만료 되었습니다");
                 response.sendRedirect("/member/login?timeout=true"); // 세션 만료로 인한 페이지 이동
                 return false;
             }

@@ -2,6 +2,7 @@ package com.shop.front.controller;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,8 +26,16 @@ public class MemberController {
 	
 	/* 로그인 페이지 */
 	@GetMapping("/login")
-	public String loginPage() {
+	public String loginPage(HttpSession session, Model model) {
 		log.info("**로그인 페이지**");
+		
+		// 일정시간 동안 활동이 없을 시 세션 만료
+		String msg = (String)session.getAttribute("flashMsg");
+		// isNotBlank() - 문자열이 null, 빈 문자열, 또는 공백이 아니여야함
+		if(StringUtils.isNotBlank(msg)) {
+			model.addAttribute("flashMsg", msg);
+			session.removeAttribute("flashMsg"); // 메시지를 한 번 사용한 후 제거(model에 추가 후 세선에서 제거)
+		}
 		return "member/login";
 	}
 	
@@ -34,7 +43,7 @@ public class MemberController {
 	@PostMapping("/login")
 	public String login(HttpSession session, Model model, RedirectAttributes redirectAttributes, 
 			MemberDto.MemberLoginRequest request) throws Exception {
-		 log.info("**로그인 처리**");  
+		 log.info("**로그인 처리중**");  
 		 MemberDto.MemberLoginResponse member = memberService.login(request);
 		 
 		if (member.isSuccess()) { 
