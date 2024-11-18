@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shop.dao.AuthorMapper">
+
+	<sql id="dynamicSearch">
+        <if test="searchType != null and keyword != null and keyword != ''">
+            <choose>
+                <when test="searchType == 'authorName'">
+                    AND INSTR(AUTHOR_NAME, #{keyword}) > 0
+                </when>
+                <when test="searchType == 'authorIntro'">
+                    AND INSTR(AUTHOR_INTRO, #{keyword}) > 0
+                </when>
+				<when test="searchType == 'authorNameIntro'">
+					AND (INSTR(AUTHOR_NAME, #{keyword}) > 0 OR INSTR(AUTHOR_INTRO, #{keyword}) > 0)
+				</when>
+				<when test="searchType == 'nationName'">
+					AND INSTR(N.NATION_NAME, #{keyword}) > 0
+				</when>
+            </choose>
+        </if>
+	</sql>
+
+	<!-- 관리자: 소속국가 리스트 -->
+<!-- 	 <select id="selectNationList" resultType="com.shop.model.AuthorVO"> -->
+<!-- 		SELECT NATION_ID, NATION_NAME -->
+<!-- 		FROM NATION -->
+<!-- 		ORDER BY NATION_ID -->
+<!-- 	 </select> -->
+	 
+ 	<!-- 관리자: 작가 등록 -->
+	 <insert id="add" parameterType="com.shop.model.AuthorVO">
+	 	INSERT INTO AUTHOR
+	 		(
+	 			AUTHOR_ID
+	 			, AUTHOR_NAME
+	 			, AUTHOR_INTRO
+	 			, NATION_ID
+	 			, REG_DATE
+	 			, USE_FLAG
+	 		)
+	 		VALUES
+	 		(
+		 		AUTHOR_SEQ.NEXTVAL
+		 		, TRIM(#{author_name})
+		 		, TRIM(#{author_intro})
+		 		, TRIM(#{nation_id})
+		 		, sysdate
+		 		, 'Y'
+		 	)
+	 </insert>
+	 
+	 <!-- 관리자: 작가 수정 -->
+	 <update id="update" parameterType="com.shop.model.AuthorVO">
+		UPDATE AUTHOR 
+	       SET AUTHOR_NAME = #{author_name} 
+		     , AUTHOR_INTRO = #{author_intro} 
+		     , NATION_ID = #{nation_id} 
+		     , UPDATE_DATE = sysdate
+		 WHERE AUTHOR_ID = #{author_id}  
+	</update>
+	
+	<!-- 관리자: 작가 삭제 -->
+	<update id="delete" parameterType="Integer">
+		UPDATE AUTHOR 
+			SET USE_FLAG = 'N' 
+		WHERE AUTHOR_ID = #{authorId}  
+	</update>
+	 
+	 <!-- 관리자: 작가 전체 게시글 수 -->
+	 <select id="selectTotalCount" parameterType="com.shop.dto.AuthorDto$AuthorSearchRequest" resultType="Integer">
+		SELECT COUNT(*) 
+		FROM AUTHOR A
+		JOIN NATION N ON A.NATION_ID = N.NATION_ID
+		WHERE A.USE_FLAG = 'Y'
+		<include refid="dynamicSearch" />
+	 </select>
+	 
+	 <!-- 관리자: 작가 리스트 -->
+	 <select id="selectAuthorList" parameterType="com.shop.dto.AuthorDto$AuthorSearchRequest" resultType="com.shop.model.AuthorVO">
+		SELECT A.*
+		FROM (
+		    SELECT 
+				/*+INDEX_DESC(AUTHOR SYS_C008232)*/
+				ROW_NUMBER() OVER (ORDER BY A.AUTHOR_ID DESC) AS RNUM,
+		        A.AUTHOR_ID, 
+		        A.AUTHOR_NAME, 
+		        A.AUTHOR_INTRO, 
+		        A.NATION_ID, 
+		        N.NATION_NAME,
+		        TO_CHAR(A.REG_DATE, 'YYYY-MM-DD') AS REG_DATE, 
+        		TO_CHAR(A.UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE,
+        		A.USE_FLAG
+		    FROM AUTHOR A
+		    JOIN NATION N ON A.NATION_ID = N.NATION_ID
+		    WHERE USE_FLAG = 'Y'
+		    <include refid="dynamicSearch" />
+		) A
+		WHERE RNUM BETWEEN #{offset} AND #{limit}
+	 </select>
+	 
+	 <!-- 관리자: 작가 상세 -->
+	 <select id="selectAuthorDetail" parameterType="Integer" resultType="com.shop.model.AuthorVO">
+		SELECT 
+		    AUTHOR_ID, 
+		    AUTHOR_NAME, 
+		    AUTHOR_INTRO, 
+		    NATION_ID, 
+		    TO_CHAR(REG_DATE, 'YYYY-MM-DD') AS REG_DATE, 
+			TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE
+		FROM AUTHOR
+		WHERE AUTHOR_ID = #{authorId}
+	 </select>
+	 
+</mapper>
