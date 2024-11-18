@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shop.dao.ImageMapper">
+
+ 	<!-- 관리자: 이미지 등록 -->
+    <insert id="insertImage" parameterType="com.shop.model.ImageVO">
+        INSERT INTO UPLOADED_IMAGE (
+            IMAGE_ID
+            , IMAGE_TYPE
+            , REF_ID
+            , ORIGINAL_NAME
+            , SAVED_NAME
+            , UPLOAD_PATH
+            , FILE_SIZE
+            , IS_THUMBNAIL
+            , IS_DELETED
+			<if test='is_temp == "Y"'>
+            , IS_TEMP
+            , TEMP_DATE
+            </if>
+            , REG_DATE
+        ) VALUES (
+            UPLOADED_IMAGE_SEQ.NEXTVAL
+            , #{image_type}
+            , <choose>
+            	<when test="ref_id != null">#{ref_id}</when>
+            	<otherwise>NULL</otherwise>
+              </choose>
+            , #{original_name}
+            , #{saved_name}
+            , #{upload_path}
+            , #{file_size}
+            , #{is_thumbnail}
+            , #{is_deleted}
+			<if test='is_temp == "Y"'>
+            , #{is_temp}
+            , SYSDATE
+            </if>
+            , SYSDATE
+        )
+    </insert>
+    
+	<!-- 관리자: 썸네일 개수 조회 -->
+    <select id="countThumbnails" resultType="int">
+        SELECT COUNT(IMAGE_ID) 
+        FROM UPLOADED_IMAGE
+        WHERE IMAGE_TYPE = #{imageType}
+        <if test="refId != null">
+        	AND REF_ID = #{refId}
+        </if>
+        AND IS_THUMBNAIL = 'Y'
+        AND IS_DELETED = 'N'
+    </select>
+    
+	<!-- 관리자: 이미지 리스트 조회 (타입 및 참조ID 기준) -->
+	<!-- IDX_UPLOADED_IMAGE_01 (IMAGE_TYPE, REF_ID) 인덱스 활용 -->
+    <select id="selectImagesByRefId" resultType="com.shop.model.ImageVO">
+        SELECT /*+ INDEX(ui IDX_UPLOADED_IMAGE_01) */
+            IMAGE_ID
+            , IMAGE_TYPE
+            , REF_ID
+            , ORIGINAL_NAME
+            , SAVED_NAME
+            , UPLOAD_PATH
+            , FILE_SIZE
+            , IS_THUMBNAIL
+            , IS_DELETED
+            , TO_CHAR(REG_DATE, 'YYYY-MM-DD') AS REG_DATE
+        FROM UPLOADED_IMAGE ui
+        WHERE IMAGE_TYPE = #{imageType}
+        <if test="refId != null">
+            AND REF_ID = #{refId}
+        </if>
+        AND IS_DELETED = 'N'
+        ORDER BY IS_THUMBNAIL DESC, IMAGE_ID ASC 
+    </select>
+    
+    <!-- 관리자: 이미지 상세 조회 -->
+    <select id="selectImage" resultType="com.shop.model.ImageVO">
+        SELECT 
+            IMAGE_ID
+            , IMAGE_TYPE
+            , REF_ID
+            , ORIGINAL_NAME
+            , SAVED_NAME
+            , UPLOAD_PATH
+            , FILE_SIZE
+            , IS_THUMBNAIL
+            , IS_DELETED
+            , TO_CHAR(DELETE_DATE, 'YYYY-MM-DD') AS DELETE_DATE 
+            , TO_CHAR(REG_DATE, 'YYYY-MM-DD') AS REG_DATE
+        FROM UPLOADED_IMAGE
+        WHERE IMAGE_ID = #{imageId}
+    </select>
+    
+	<!-- 관리자: 이미지 파일 및 에디터 논리적 삭제 처리 (DB 업데이트) -->
+    <update id="softDeleteImage" parameterType="long">
+		UPDATE UPLOADED_IMAGE 
+		SET IS_DELETED = 'Y',
+			DELETE_DATE = SYSDATE
+		WHERE IMAGE_ID = #{imageId}
+    </update>
+    
+	<!-- 관리자: 이미지 썸네일 상태 업데이트 -->
+    <update id="updateThumbnail" parameterType="com.shop.model.ImageVO">
+        UPDATE UPLOADED_IMAGE 
+        SET IS_THUMBNAIL = #{is_thumbnail}
+        WHERE IMAGE_ID = #{image_id}
+    </update>
+    
+	<!-- 관리자: 논리적 삭제된지 7일 지난 이미지 조회 -->
+	<!-- IDX_UPLOADED_IMAGE_02 (IS_DELETED, DELETE_DATE) 인덱스 활용 -->
+	<select id="selectExpiredImages" resultType="com.shop.model.ImageVO">
+	    SELECT /*+ INDEX(ui IDX_UPLOADED_IMAGE_02) */ 
+	    	IMAGE_ID
+            , IMAGE_TYPE
+            , REF_ID
+            , ORIGINAL_NAME
+            , SAVED_NAME
+            , UPLOAD_PATH
+            , FILE_SIZE
+            , IS_THUMBNAIL
+            , IS_DELETED
+            , DELETE_DATE
+            , REG_DATE
+	    FROM UPLOADED_IMAGE ui
+	    WHERE IS_DELETED = 'Y'
+	    <![CDATA[
+	    AND DELETE_DATE <= SYSDATE - 7
+	    ]]>
+	    ORDER BY DELETE_DATE ASC
+	</select>
+	
+	<!-- 관리자: 만료된 이미지 DB에서 완전히 삭제 (물리적 삭제) -->
+	<delete id="deleteExpiredImages" parameterType="java.util.List">
+	    DELETE FROM UPLOADED_IMAGE 
+	    WHERE IMAGE_ID IN 
+	    <foreach item="imageId" collection="list" open="(" separator="," close=")">
+	        #{imageId}
+	    </foreach>
+	</delete>
+	
+	<!-- 관리자: 이미지 경로로 이미지 정보 조회 -->
+	<select id="selectImageByPath" resultType="com.shop.model.ImageVO">
+	    SELECT 
+			IMAGE_ID
+	        , IMAGE_TYPE
+	        , UPLOAD_PATH
+	        , SAVED_NAME
+	        , IS_TEMP
+	    FROM UPLOADED_IMAGE
+	    WHERE UPLOAD_PATH || SAVED_NAME = #{imagePath}
+	    AND IS_DELETED = 'N'
+	</select>
+	
+	<!-- 관리자: 이미지 경로 정보 업데이트 (임시->실제 저장소 이동 시) -->
+	<update id="updateImagePath" parameterType="com.shop.model.ImageVO">
+	    UPDATE UPLOADED_IMAGE 
+	    SET UPLOAD_PATH = #{upload_path},
+	        SAVED_NAME = #{saved_name},
+	        IS_TEMP = #{is_temp},
+	        TEMP_DATE = NULL
+	    WHERE IMAGE_ID = #{image_id}
+	</update>
+	
+	<!-- 관리자: 만료된 에디터 임시 이미지 조회 -->
+	<!-- IDX_UPLOADED_IMAGE_03 (IS_TEMP, IS_DELETED, REG_DATE) 인덱스 활용 -->
+	<select id="selectExpiredTempImages" resultType="com.shop.model.ImageVO">
+		SELECT /*+ INDEX(ui IDX_UPLOADED_IMAGE_03) */
+	        IMAGE_ID
+	        , IMAGE_TYPE
+	        , REF_ID
+	        , ORIGINAL_NAME
+	        , SAVED_NAME
+	        , UPLOAD_PATH
+	        , FILE_SIZE
+	        , IS_THUMBNAIL
+	        , IS_DELETED
+	        , REG_DATE
+	    FROM UPLOADED_IMAGE ui
+	    WHERE IS_TEMP = 'Y'		-- 임시 저장된 이미지만 선택	
+	    AND IS_DELETED = 'N'	-- 아직 삭제되지 않은 이미지
+		<![CDATA[
+	    AND REG_DATE < SYSDATE - 1/24	-- 1시간 이상 경과된 이미지
+	    ]]>
+	</select>
+	
+</mapper>

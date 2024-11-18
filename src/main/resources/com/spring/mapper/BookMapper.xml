@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shop.dao.BookMapper">
+
+	<sql id="dynamicSearch">
+        <if test="searchType != null and keyword != null and keyword != ''">
+            <choose>
+                <when test="searchType == 'bookName'">
+                    AND INSTR(BOOK_NAME, #{keyword}) > 0
+                </when>
+                <when test="searchType == 'authorName'">
+                    AND INSTR(b.AUTHOR_NAME, #{keyword}) > 0
+                </when>
+				<when test="searchType == 'categoryName'">
+					AND INSTR(c.CATEGORY_NAME, #{keyword}) > 0
+				</when>
+            </choose>
+        </if>
+	</sql>
+	
+    <sql id="searchCondition">
+    	<if test="searchType != null and keyword != null and keyword != ''">
+	        <choose>
+	            <when test="searchType == 'all'">
+	                AND (
+	                    INSTR(b.BOOK_NAME, #{keyword}) > 0 
+	                    OR INSTR(b.PUBLISHER, #{keyword}) > 0 
+	                    OR INSTR(a.AUTHOR_NAME, #{keyword}) > 0
+	                    OR INSTR(c1.CATEGORY_NAME, #{keyword}) > 0
+	                    OR INSTR(c2.CATEGORY_NAME, #{keyword}) > 0
+	                    OR INSTR(c3.CATEGORY_NAME, #{keyword}) > 0
+	                )
+	            </when>
+	            <when test="searchType == 'bookName'">
+	                AND INSTR(b.BOOK_NAME, #{keyword}) > 0
+	            </when>  
+	            <when test="searchType == 'authorName'">
+	                AND INSTR(a.AUTHOR_NAME, #{keyword}) > 0
+	            </when>
+	        </choose>
+        </if>
+    </sql>
+	
+ 	<!-- 관리자: 상품 등록 -->
+	 <insert id="add" parameterType="com.shop.model.BookVO">
+	 <!-- order 속성: order를 BEFORE로 설정하면, INSERT 쿼리 실행 전에 시퀀스 값을 가져오게 된다. -->
+	 	<selectKey keyProperty="book_id" order="BEFORE" resultType="int">	
+            SELECT BOOK_SEQ.NEXTVAL FROM DUAL
+        </selectKey>
+	 	INSERT INTO BOOK
+	 		(
+	 			BOOK_ID
+	 			, AUTHOR_ID
+	 			, CATEGORY_CODE
+	 			, BOOK_NAME
+	 			, PUBLE_YEAR
+	 			, PUBLISHER
+	 			, BOOK_PRICE
+	 			, BOOK_STOCK
+	 			, BOOK_DISCOUNT
+	 			, BOOK_INTRO
+	 			, BOOK_CONTENTS
+	 			, REG_DATE
+	 			, USE_FLAG
+	 		)
+	 		VALUES
+	 		(
+		 		#{book_id}
+		 		, #{author_id}
+		 		, #{category_code}
+		 		, #{book_name}
+		 		, #{puble_year}
+		 		, #{publisher}
+		 		, #{book_price}
+		 		, #{book_stock}
+		 		, #{book_discount}
+		 		, #{book_intro}
+		 		, #{book_contents}
+		 		, sysdate
+		 		, 'Y'
+		 	)
+	 </insert>
+	 
+ 	 <!-- 관리자: 상품 수정 -->
+	 <update id="update" parameterType="com.shop.model.BookVO">
+		UPDATE BOOK 
+	       SET AUTHOR_ID = #{author_id} 
+		     , CATEGORY_CODE = #{category_code} 
+		     , BOOK_NAME = #{book_name} 
+		     , PUBLE_YEAR = #{puble_year} 
+		     , PUBLISHER = #{publisher} 
+		     , BOOK_PRICE = #{book_price} 
+		     , BOOK_STOCK = #{book_stock} 
+		     , BOOK_DISCOUNT = #{book_discount} 
+		     , BOOK_INTRO = #{book_intro} 
+		     , BOOK_CONTENTS = #{book_contents} 
+		     , UPDATE_DATE = sysdate
+		 WHERE BOOK_ID = #{book_id}  
+	</update>
+	
+	<!-- 관리자: 상품 삭제 -->
+	<update id="delete" parameterType="Integer">
+		UPDATE BOOK 
+			SET USE_FLAG = 'N' 
+		WHERE BOOK_ID = #{bookId}  
+	</update>
+	 
+	 <!-- 관리자: 상품 전체 게시글 수 -->
+	 <select id="selectTotalCount" parameterType="com.shop.dto.BookDto$BookSearchRequest" resultType="Integer">
+		SELECT COUNT(*) 
+		FROM BOOK a
+		JOIN AUTHOR b ON a.AUTHOR_ID = b.AUTHOR_ID
+	    JOIN CATEGORY c ON a.CATEGORY_CODE = c.CATEGORY_CODE 
+		WHERE a.USE_FLAG = 'Y'
+		<include refid="dynamicSearch" />
+	 </select>
+	 
+	 <!-- 관리자: 상품 리스트 -->
+	 <select id="selectBookList" parameterType="com.shop.dto.BookDto$BookSearchRequest" resultType="com.shop.model.BookVO">
+		SELECT A.*
+		FROM (
+		    SELECT
+		    	/*+INDEX_DESC(BOOK SYS_C008332)*/
+		        ROW_NUMBER() OVER (ORDER BY BOOK_ID DESC) AS RNUM,
+		        a.BOOK_ID, 
+		        a.AUTHOR_ID,
+		        b.AUTHOR_NAME,
+		        a.CATEGORY_CODE,
+		        c.CATEGORY_NAME,
+		        a.BOOK_NAME,
+		        a.PUBLE_YEAR, 
+		        a.PUBLISHER,
+		        a.BOOK_PRICE,
+		        a.BOOK_STOCK,
+		        a.BOOK_DISCOUNT,
+		        a.BOOK_INTRO,
+		        a.BOOK_CONTENTS,
+		        TO_CHAR(a.REG_DATE, 'YYYY-MM-DD') AS REG_DATE, 
+		        TO_CHAR(a.UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE, 
+		        a.USE_FLAG
+		    FROM BOOK a
+		    JOIN AUTHOR b ON a.AUTHOR_ID = b.AUTHOR_ID
+		    JOIN CATEGORY c ON a.CATEGORY_CODE = c.CATEGORY_CODE
+		    WHERE a.USE_FLAG = 'Y'
+		<include refid="dynamicSearch" />
+		) A
+		WHERE RNUM BETWEEN #{offset} AND #{limit}
+	 </select>
+	 
+	 <!-- 관리자: 상품 상세 -->
+	 <select id="selectBookDetail" parameterType="Integer" resultType="com.shop.model.BookVO">
+		SELECT
+		    a.BOOK_ID, 
+		    a.AUTHOR_ID,
+		    b.AUTHOR_NAME,
+		    a.CATEGORY_CODE,
+		    c.CATEGORY_NAME,
+		    a.BOOK_NAME,
+		    TO_CHAR(a.PUBLE_YEAR, 'YYYY-MM-DD') AS PUBLE_YEAR, 
+		    a.PUBLISHER,
+		    a.BOOK_PRICE,
+		    a.BOOK_STOCK,
+		    a.BOOK_DISCOUNT,
+		    a.BOOK_INTRO,
+		    a.BOOK_CONTENTS,
+		    TO_CHAR(a.REG_DATE, 'YYYY-MM-DD') AS REG_DATE, 
+		    TO_CHAR(a.UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE, 
+		    a.USE_FLAG
+		FROM BOOK a
+		JOIN AUTHOR b ON a.AUTHOR_ID = b.AUTHOR_ID
+		JOIN CATEGORY c ON a.CATEGORY_CODE = c.CATEGORY_CODE
+		WHERE a.BOOK_ID = #{bookId}
+		AND a.USE_FLAG = 'Y'
+	 </select>
+	 
+	<!-- 전체 카테고리 목록 조회 -->
+	<select id="selectCategoryList" resultType="com.shop.model.CategoryVO">
+		SELECT TIER, CATEGORY_NAME, CATEGORY_CODE, CATEGORY_PARENT_CODE
+		FROM CATEGORY 
+		ORDER BY TIER, CATEGORY_CODE
+	</select>
+    
+    <!-- 특정 부모 카테고리의 하위 카테고리 조회 -->
+    <select id="selectSubCategoryList" parameterType="string" resultType="com.shop.model.CategoryVO">
+        SELECT TIER, CATEGORY_NAME, CATEGORY_CODE, CATEGORY_PARENT_CODE 
+        FROM CATEGORY
+        WHERE CATEGORY_PARENT_CODE = #{parentCode}
+        ORDER BY CATEGORY_CODE
+    </select>
+    
+    <!-- 특정 계층의 카테고리 조회 -->
+    <select id="selectCategoryListByTier" parameterType="int" resultType="com.shop.model.CategoryVO">
+        SELECT TIER, CATEGORY_NAME, CATEGORY_CODE, CATEGORY_PARENT_CODE
+        FROM CATEGORY 
+        WHERE TIER = #{tier}
+        ORDER BY CATEGORY_CODE
+    </select>
+    
+    <!-- 카테고리별 상품리스트 조회 -->
+	<select id="selectBookListByCategory" resultType="com.shop.model.BookVO">
+	    SELECT A.*
+	    FROM (
+	        SELECT
+	            ROW_NUMBER() OVER (ORDER BY b.BOOK_ID DESC) AS RNUM,
+	            b.BOOK_ID, 
+	            b.AUTHOR_ID,
+	            b.CATEGORY_CODE,
+	            b.BOOK_NAME,
+	            b.PUBLISHER,
+	            TO_CHAR(b.PUBLE_YEAR, 'YYYY.MM.DD') AS PUBLE_YEAR,
+	            b.BOOK_PRICE,
+	            b.BOOK_DISCOUNT,
+	            b.BOOK_INTRO,
+	            TO_CHAR(b.REG_DATE, 'YYYY-MM-DD') AS REG_DATE,
+	            a.AUTHOR_NAME,
+	            i.UPLOAD_PATH,
+	            i.SAVED_NAME
+	        FROM BOOK b
+	        JOIN AUTHOR a ON b.AUTHOR_ID = a.AUTHOR_ID
+	        LEFT JOIN UPLOADED_IMAGE i ON b.BOOK_ID = i.REF_ID 
+	            AND i.IMAGE_TYPE = 'BOOK' 
+	            AND i.IS_THUMBNAIL = 'Y'
+	            AND i.IS_DELETED = 'N'
+	        JOIN CATEGORY c3 ON b.CATEGORY_CODE = c3.CATEGORY_CODE  -- 3티어와 매칭
+	        LEFT JOIN CATEGORY c2 ON c3.CATEGORY_PARENT_CODE = c2.CATEGORY_CODE  -- 2티어 매칭
+	        LEFT JOIN CATEGORY c1 ON c2.CATEGORY_PARENT_CODE = c1.CATEGORY_CODE  -- 1티어 매칭
+	        WHERE b.USE_FLAG = 'Y'
+	        <if test="categoryCode != null and categoryCode != ''">
+	        AND (
+	            c1.CATEGORY_CODE = #{categoryCode}  -- 3티어 직접 매칭
+	            OR c2.CATEGORY_CODE = #{categoryCode}  -- 2티어 매칭
+	            OR c3.CATEGORY_CODE = #{categoryCode}  -- 1티어 매칭
+	        )
+	        </if>
+	        <include refid="searchCondition" />
+	    ) A
+	    WHERE RNUM BETWEEN #{offset} AND #{limit}
+	</select>
+    
+	<!-- 카테고리별 상품 전체 개수 조회 -->
+	<select id="selectTotalCountByCategory" resultType="Integer">
+	    SELECT COUNT(*)
+	    FROM BOOK b
+	    JOIN AUTHOR a ON b.AUTHOR_ID = a.AUTHOR_ID
+	    JOIN CATEGORY c3 ON b.CATEGORY_CODE = c3.CATEGORY_CODE  -- 3티어와 매칭
+        LEFT JOIN CATEGORY c2 ON c3.CATEGORY_PARENT_CODE = c2.CATEGORY_CODE  -- 2티어 매칭
+        LEFT JOIN CATEGORY c1 ON c2.CATEGORY_PARENT_CODE = c1.CATEGORY_CODE  -- 1티어 매칭
+	    WHERE b.USE_FLAG = 'Y'
+	    <if test="categoryCode != null and categoryCode != ''">
+	    AND (
+	        c1.CATEGORY_CODE = #{categoryCode}  
+	        OR c2.CATEGORY_CODE = #{categoryCode}  
+	        OR c3.CATEGORY_CODE = #{categoryCode}  
+	    )
+	    </if>
+	    <include refid="searchCondition" />
+	</select>
+	
+	<!-- 카테고리별 도서 상세 조회 -->
+	<select id="selectShopBookDetail" parameterType="Integer" resultType="com.shop.model.BookVO">
+	    SELECT
+	        b.BOOK_ID, 
+	        b.AUTHOR_ID,
+	        b.CATEGORY_CODE,
+	        b.BOOK_NAME,
+	        b.PUBLISHER,
+	        b.BOOK_PRICE,
+	        b.BOOK_STOCK,
+	        b.BOOK_DISCOUNT,
+	        b.BOOK_INTRO,
+	        b.BOOK_CONTENTS,
+	        TO_CHAR(b.PUBLE_YEAR, 'YYYY.MM.DD') AS PUBLE_YEAR,
+	        TO_CHAR(b.REG_DATE, 'YYYY-MM-DD') AS REG_DATE,
+	        TO_CHAR(b.UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE,
+	        a.AUTHOR_NAME,
+	        c3.CATEGORY_NAME AS CATEGORY_NAME3,
+	        c2.CATEGORY_NAME AS CATEGORY_NAME2,
+	        c1.CATEGORY_NAME AS CATEGORY_NAME1
+	    FROM BOOK b
+	    JOIN AUTHOR a ON b.AUTHOR_ID = a.AUTHOR_ID
+	    JOIN CATEGORY c3 ON b.CATEGORY_CODE = c3.CATEGORY_CODE
+	    LEFT JOIN CATEGORY c2 ON c3.CATEGORY_PARENT_CODE = c2.CATEGORY_CODE
+	    LEFT JOIN CATEGORY c1 ON c2.CATEGORY_PARENT_CODE = c1.CATEGORY_CODE
+	    WHERE b.BOOK_ID = #{bookId}
+	    AND b.USE_FLAG = 'Y'
+	</select>
+
+</mapper>
