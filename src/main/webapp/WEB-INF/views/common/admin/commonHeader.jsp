@@ -1,8 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>    
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE HTML>
 <html>
+<style>
+	.header.shop .logo {
+		margin: 0px;
+	}
+</style>
 
 <!-- Preloader -->
 <div class="preloader">
@@ -18,12 +23,12 @@
 <!-- Header -->
 <header class="header shop v2">
 	<div class="middle-inner">
-		<div class="container">
+		<div class="container" style="max-width: 100%; border-bottom: 1px solid;">
 			<div class="row">
 				<div class="col-lg-2 col-md-2 col-12" style="flex: 0 0 10%; max-width: 10%;">
 					<!-- Logo -->
 					<div class="logo">
-						<a href="/admin/main"><img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="logo"></a>
+						<a href="/admin/member/list"><img src="${pageContext.request.contextPath}/resources/images/logo.png" alt="logo"></a>
 					</div>
 					<!--/ End Logo -->
 				</div>
@@ -38,10 +43,10 @@
 											<div class="nav-inner">	
 												<ul class="nav main-menu menu navbar-nav">
 													<li style="margin:0px 15px;"><a href="/admin/member/list" style="font-size: large; font-weight: bold;">회원관리</a></li>												
-													<li style="margin:0px 15px;"><a href="/admin/product/list" style="font-size: large; font-weight: bold;">상품<i class="ti-angle-down"></i></a>
+													<li style="margin:0px 15px;"><a href="/admin/book/list" style="font-size: large; font-weight: bold;">상품<i class="ti-angle-down"></i></a>
 														<ul class="dropdown">
-															<li><a href="/admin/product/list">상품 관리</a></li>
-															<li><a href="/admin/product/add">상품 등록</a></li>
+															<li><a href="/admin/book/list">상품 관리</a></li>
+															<li><a href="/admin/book/add">상품 등록</a></li>
 														</ul>
 													</li>
 													<li style="margin:0px 15px;"><a href="/admin/author/list" style="font-size: large; font-weight: bold;">작가<i class="ti-angle-down"></i></a>

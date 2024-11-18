@@ -1,14 +1,16 @@
-package com.shop.member;
+package com.shop.test.member;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.shop.front.dao.MemberMapper;
+import com.shop.dao.MemberMapper;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
 public class idChkTest {
 	

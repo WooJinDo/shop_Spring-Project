@@ -143,7 +143,7 @@
 	</div>
 
 <%@ include file="/WEB-INF/views/common/commonJs.jsp" %>
-	<!-- 다음 우편번호 API 적용 -->
+<!-- 다음 우편번호 API 적용 -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
   // 우편번호 찾기 화면을 넣을 element
@@ -249,15 +249,20 @@ $(document).ready(function() {
 				  dataType: "json",                     // 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
 				  data: {email : email},   				//쿼리 파라미터 형식
 				  success: function(response) {         // 성공 시 실행되는 함수
-					//console.log(response);              // 응답 데이터 처리
+					console.log(response);              // 응답 데이터 처리
 					$emailChk.attr("disabled", false).css("background-color","#F6F7FB");
 					emailCode = response.emailNum;		// Json 데이터 추출
 					alert("해당 이메일로 인증번호가 전송되었습니다.");
 				  },
 				  error: function(xhr, status, error) { // 실패 시 실행되는 함수
 					console.error('Error:', error);     // 에러 처리
-					alert("이메일 인증 호출이 실패했습니다.");
-				  }
+	                // 서버에서 전달된 메시지 출력
+	                if (xhr.responseText) {
+	                    alert(xhr.responseText);
+	                } else {
+	                	alert("이메일 인증 호출이 실패했습니다.");
+	                }
+				}
 			});
 		}
 	});
@@ -328,8 +333,13 @@ $(document).ready(function() {
 				  },
 				  error: function(xhr, status, error) { // 실패 시 실행되는 함수
 					console.error('Error:', error);     // 에러 처리
-					alert("회원 가입에 실패했습니다.");
-				  }
+	                // 서버에서 전달된 메시지 출력
+	                if (xhr.responseText) {
+	                    alert(xhr.responseText);
+	                } else {
+	                	alert("회원 가입에 실패했습니다.");
+	                }
+				}
 			}); 
 		}
 	});
@@ -358,14 +368,13 @@ $(document).ready(function() {
 		if(userIdValue === '') {
 			setErrorFor($userId, '아이디를 입력해주세요.');
 			return false;
-		} else if(userIdValue.length < 3 || userIdValue.length > 15) {
-			setErrorFor($userId, '아이디는 3자 이상 15자 이하이어야 합니다.'); //3-15자
+		} else if(userIdValue.length < 4 || userIdValue.length > 20) {
+			setErrorFor($userId, '아이디는 4자 이상 20자 이하이어야 합니다.'); //3-15자
 			return false;
 		} else if(!isValidUserId(userIdValue)) {
-			setErrorFor($userId, '아이디는 숫자, 영어를 포함해야 합니다.');
+			setErrorFor($userId, '아이디는 영문, 숫자로 입력 가능합니다.');
 			return false;
-		}
-		else {
+		} else {
 			setSuccessFor($userId);
 			return true;
 		}
@@ -382,7 +391,7 @@ $(document).ready(function() {
             setErrorFor($password, '비밀번호는 8자 이상이어야 합니다.');
             return false;
         } else if(!isValidPassword(passwordValue)) {
-            setErrorFor($password, '비밀번호는 숫자, 소문자, 대문자를 포함해야 합니다.');
+            setErrorFor($password, '비밀번호는 영문, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.');
             return false;
         } else {
             setSuccessFor($password);
@@ -517,7 +526,7 @@ $(document).ready(function() {
 	
  	// 비밀번호 유효성 검사 함수
     function isValidPassword(password) {
-        var regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/;  // 숫자, 소문자, 대문자를 포함
+    	var regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;  // 영문, 숫자, 특수문자를 포함
         return regex.test(password);
     }
 

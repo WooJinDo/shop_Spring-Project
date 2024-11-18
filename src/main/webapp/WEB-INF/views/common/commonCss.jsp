@@ -33,7 +33,14 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/reset.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/responsive.css">
-
+    
+    <!-- 달력 위젯(datepicker) -->
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    
+    <!-- ekEditor5 -->
+	<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.3.0/ckeditor5.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/ekeditor5.css">
+    
 	<!-- Color CSS -->
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/color/color7.css">
 	<!--<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/color/color2.css">-->

@@ -1,14 +1,11 @@
-package com.shop.persitence;
+package com.shop.test.persitence;
 
-import static org.junit.Assert.fail;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-import org.junit.Test;
-
-import lombok.extern.log4j.Log4j;
+import org.junit.jupiter.api.Test;
 
 public class JDBCTest {
 	static {

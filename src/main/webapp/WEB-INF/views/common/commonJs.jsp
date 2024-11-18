@@ -38,3 +38,8 @@
 	<script src="${pageContext.request.contextPath}/resources/js/easing.js"></script>
 	<!-- Active JS -->
 	<script src="${pageContext.request.contextPath}/resources/js/active.js"></script>
+	<!-- 위지윅 ckeditor -->
+<!-- 	<script src="https://cdn.ckeditor.com/ckeditor5/31.1.0/classic/ckeditor.js"></script> -->
+	<!-- 달력 위젯(datepicker) -->
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/datepicker.js"></script>

@@ -1,4 +1,4 @@
-package com.shop.front.controller;
+package com.shop.controller;
 
 import javax.servlet.http.HttpSession;
 
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.shop.front.dto.MemberDto;
-import com.shop.front.service.MemberService;
+import com.shop.dto.MemberDto;
+import com.shop.service.MemberService;
 
 import lombok.extern.log4j.Log4j;
 

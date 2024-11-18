@@ -3,19 +3,21 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 	
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
  		<!-- <property name="driverClassName" value="oracle.jdbc.pool.OracleDataSource"></property>
 		<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:orcl"></property> -->
-         <!-- Oracle 11g 경우 value="jdbc:oracle:thin:@URL주소:1521:XE" -->
-         <!-- Oracle 19  경우 value="jdbc:oracle:thin:@URL주소:1521:orcl" -->
-        <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"></property>
-		<property name="jdbcUrl" value="jdbc:log4jdbc:oracle:thin:@localhost:1521:orcl"></property>
-		<property name="username" value="shop"></property>
-		<property name="password" value="1234"></property>
+        <property name="driverClassName" value="${dataSource.driverClassName}"></property>
+		<property name="jdbcUrl" value="${dataSource.jdbcUrl}"></property>
+		<property name="username" value="${dataSource.username}"></property>
+		<property name="password" value="${dataSource.password}"></property>
 	</bean>	
 	
 	<bean id="datasource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
@@ -27,25 +29,17 @@
 		<property name="dataSource" ref="datasource"></property>
 		
 		<!-- MyBatis는 SQL 쿼리를 Java 메서드와 연결하기 위해 -->
-		<property name="mapperLocations" value="classpath:/com/shop/mapper/*.xml" />
+		<property name="mapperLocations" value="classpath:/com/spring/mapper/*.xml" />
 	</bean>	
 	
-	<!-- Jackson을 사용하기 위한 기본 설정 -->
-	<!-- <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
-	    <property name="messageConverters">
-	        <list>
-	            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
-	        </list>
-	    </property>
-	</bean> -->
 	
     <!-- navermail설정 -->
     <!-- '2차 인증' 사용 계정을 이용할 시 인증관련된 에러가 발생 -->
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> 
-     <property name="host" value="smtp.naver.com"/> <!-- 메이서버 호스트 -->
-     <property name="port" value="465"/> <!-- 메이서버 포트번호 -->
-     <property name="username" value=""/> <!-- 자신의 이메일 아이디, SMTP 사용 권한을 얻어 오는 역할을 수행 -->
-     <property name="password" value=""/> <!-- 자신의 비밀번호 -->
+     <property name="host" value="${mail.host}"/> <!-- 메이서버 호스트 -->
+     <property name="port" value="${mail.port}"/> <!-- 메이서버 포트번호 -->
+     <property name="username" value="${mail.username}"/> <!-- 자신의 이메일 아이디, SMTP 사용 권한을 얻어 오는 역할을 수행 -->
+     <property name="password" value="${mail.password}"/> <!-- 자신의 비밀번호 -->
        <!-- 보안연결 SSL과 관련된 설정 -->
      <property name="javaMailProperties">
       <props>
@@ -59,14 +53,19 @@
      </property>
     </bean>
 	
-	<mybatis-spring:scan base-package="com.shop.front.dao"/>
-	<context:component-scan base-package="com.shop.front"/>
-	<context:component-scan base-package="com.shop.interceptor"/>
-	<context:component-scan base-package="com.shop.config"/>
-	<context:component-scan base-package="com.shop.back"/>
-	<!-- 
-	<context:component-scan base-package="com.shop.front.model"/>
-	<context:component-scan base-package="com.shop.front.service"/> 
-	-->
+	<!-- 트랜잭션 설정 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="datasource"></property>
+	</bean>
+	<!-- 트랜잭션을 어노테이션 기반으로 사용 -->
+	<tx:annotation-driven />
+	
+	<!-- 스케쥴링 어노테이션을 사용하기 위한 설정 -->
+	<task:annotation-driven/>
+	
+	<mybatis-spring:scan base-package="com.shop.dao"/>
+	<context:component-scan base-package="com.shop"/>
+	<!-- properties 파일 위치 설정 -->
+	<context:property-placeholder location="classpath:config/*.properties" />
 	
 </beans>

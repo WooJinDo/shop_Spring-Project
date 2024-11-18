@@ -1,4 +1,4 @@
-package com.shop.front.model;
+package com.shop.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MemberVO {
+public class MemberVO extends Criteria {
 	
 	//회원 ID
 	private String user_id;
@@ -32,7 +32,7 @@ public class MemberVO {
 	//상세주소
 	private String addr_detail;
 	
-	//관리자 여부(DEFAULT: user)
+	//권한(DEFAULT: user)
 	private String admin_ck;
 	
 	//등록일자(DEFAULT: SYSDATE)
@@ -43,5 +43,8 @@ public class MemberVO {
 	
 	//회원 포인트
 	private int point;
+	
+	// 사용여부
+	private String use_flag;
 	
 }

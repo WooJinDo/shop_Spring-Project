@@ -140,10 +140,16 @@
 		</dependency>
 		
 		<!-- Test -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
+			<scope>test</scope>
+		</dependency> -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.8.2</version>
 			<scope>test</scope>
 		</dependency>
 		
@@ -226,6 +232,34 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.12.0</version> 
 		</dependency>
+		
+	    <!-- 파일 업로드 처리를 위한 의존성 -->
+	    <dependency>
+	        <groupId>commons-fileupload</groupId>
+	        <artifactId>commons-fileupload</artifactId>
+	        <version>1.5</version>
+	    </dependency>
+	    
+	    <!-- 파일 처리 유틸리티 -->
+	    <dependency>
+	        <groupId>commons-io</groupId>
+	        <artifactId>commons-io</artifactId>
+	        <version>2.11.0</version>
+	    </dependency>
+	    
+	    <!-- 이미지 리사이징 등 처리를 위한 의존성 -->
+	    <dependency>
+	        <groupId>org.imgscalr</groupId>
+	        <artifactId>imgscalr-lib</artifactId>
+	        <version>4.2</version>
+	    </dependency>
+	    
+	    <!-- 파일 형식 감지를 위한 의존성 -->
+	    <dependency>
+	        <groupId>org.apache.tika</groupId>
+	        <artifactId>tika-core</artifactId>
+	        <version>2.9.1</version>
+	    </dependency>
 		
 	</dependencies>
 	

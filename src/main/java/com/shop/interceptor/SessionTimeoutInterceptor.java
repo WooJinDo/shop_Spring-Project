@@ -12,7 +12,7 @@ import lombok.extern.log4j.Log4j;
 /* 세션 타임아웃 관리 인터셉터 */
 @Log4j
 public class SessionTimeoutInterceptor implements HandlerInterceptor {
-	private static final int MAX_INACTIVE_INTERVAL = 30 * 60; // 30분
+	private static final int MAX_INACTIVE_INTERVAL = 60 * 30; // 30분
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)

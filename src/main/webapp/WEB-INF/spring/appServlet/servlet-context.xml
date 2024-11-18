@@ -12,30 +12,57 @@
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
 
-	<!-- 정적 리소스 핸들링 -->
-	<resources mapping="/resources/**" location="/resources/" />
-
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<beans:property name="prefix" value="/WEB-INF/views/" />
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
-	<!-- 패키지 스캔 설정 -->
-	<context:component-scan base-package="com.shop.front.controller" />
-	<context:component-scan base-package="com.shop.back.controller" />
-	
 	<!-- 인터셉터 설정 -->
     <interceptors>
+    	<!-- 관리자/사용자 페이지 접근 제어 인터셉터 -->
         <interceptor>
             <mapping path="/admin/**" />
             <mapping path="/user/**" />
             <beans:bean id="AuthenticationInterceptor" class="com.shop.interceptor.AuthenticationInterceptor" />
         </interceptor>
+        
+        <!-- 세션 타임아웃 체크 인터셉터 -->
         <interceptor>
             <mapping path="/**" />
-            <beans:bean id="SessionTimeoutInterceptor.java" class="com.shop.interceptor.SessionTimeoutInterceptor" />
+            <beans:bean id="SessionTimeoutInterceptor" class="com.shop.interceptor.SessionTimeoutInterceptor" />
         </interceptor>
     </interceptors>
+    
+   	<!-- 정적 리소스 핸들링 -->
+	<resources mapping="/resources/**" location="/resources/" />
+    <!-- 정적 리소스로 처리하여 브라우저에서 직접 파일에 접근할 수 있도록 -->
+    <resources mapping="/uploads/**" location="file:${upload.path}"/>
+    
+    <!-- CommonsMultipartResolver 설정 -->
+    <beans:bean id="multipartResolver" 
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 최대 업로드 가능한 바이트 크기 (10MB) -->
+        <beans:property name="maxUploadSize" value="${upload.max.size}" />
+        <!-- 디스크에 임시 파일을 생성하기 전에 메모리에 보관할 수 있는 최대 바이트 크기 (2MB) -->
+        <beans:property name="maxInMemorySize" value="${upload.memory.size}" />
+        <!-- 업로드시 사용할 인코딩 -->
+        <beans:property name="defaultEncoding" value="${upload.default.encoding}" />
+        <!-- 업로드 임시 저장 경로 -->
+        <beans:property name="uploadTempDir" value="${upload.temp.dir}" />
+    </beans:bean>
+    
+    <!-- 파일 업로드 관련 인터셉터 설정 -->
+<!--     <interceptors> -->
+<!--         <interceptor> -->
+<!--             <mapping path="/upload/**"/> -->
+<!--             <beans:bean class="com.example.interceptor.FileUploadInterceptor"/> -->
+<!--         </interceptor> -->
+<!--     </interceptors> -->
+
+    <!-- 패키지 스캔 설정 -->
+	<context:component-scan base-package="com.shop.controller" />
+	<!-- properties 파일 위치 설정 -->
+	<context:property-placeholder location="classpath:config/*.properties" />
 	
 </beans:beans>
