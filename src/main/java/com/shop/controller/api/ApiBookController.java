@@ -222,37 +222,45 @@ public class ApiBookController {
             @RequestPart("files") List<MultipartFile> files) throws Exception {
 		log.info("**상품 등록 처리**");
 		
-		// 1. 전체 파일 크기 체크
-		long totalSize = 0;
-		String maxFileSizeInMB = (maxFileSize / (1024 * 1024)) + "MB";
-		for(MultipartFile file : files) {
-			totalSize += file.getSize();
-			
-			// 2. 개별 파일 크기 체크
-			if(file.getSize() > maxFileSize) {
-				return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-						.contentType(MediaType.APPLICATION_JSON_UTF8)
-						.body("개별 파일 크기가 최대 크기 " + maxFileSizeInMB + "를 초과했습니다");
+		try {
+			// 1. 전체 파일 크기 체크
+			long totalSize = 0;
+			String maxFileSizeInMB = (maxFileSize / (1024 * 1024)) + "MB";
+			for(MultipartFile file : files) {
+				totalSize += file.getSize();
+				
+				// 2. 개별 파일 크기 체크
+				if(file.getSize() > maxFileSize) {
+					return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+							.contentType(MediaType.APPLICATION_JSON_UTF8)
+							.body("개별 파일 크기가 최대 크기 " + maxFileSizeInMB + "를 초과했습니다");
+				}
+				
+				// 3. 파일 타입 체크
+				if (!fileUploadUtil.validateFileType(file)) {
+	                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                		.contentType(MediaType.APPLICATION_JSON_UTF8)
+	                		.body("허용되지 않는 파일 형식입니다. (jpg, jpeg, png, gif 파일만 가능)");
+	            }
 			}
 			
-			// 3. 파일 타입 체크
-			if (!fileUploadUtil.validateFileType(file)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                		.contentType(MediaType.APPLICATION_JSON_UTF8)
-                		.body("허용되지 않는 파일 형식입니다. (jpg, jpeg, png, gif 파일만 가능)");
-            }
-		}
+			// 4. 전체 파일 크기 체크
+			if(totalSize > maxFileSize) {
+				return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+						.contentType(MediaType.APPLICATION_JSON_UTF8)
+						.body("전체 파일 크기가 최대 크기 " + maxFileSizeInMB + "를 초과했습니다");
+			}
+			
+			bookService.add(request, files);
+			return ResponseEntity.status(HttpStatus.CREATED).body(true);
 		
-		// 4. 전체 파일 크기 체크
-		if(totalSize > maxFileSize) {
-			return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-					.contentType(MediaType.APPLICATION_JSON_UTF8)
-					.body("전체 파일 크기가 최대 크기 " + maxFileSizeInMB + "를 초과했습니다");
-		}
-		
-		bookService.add(request, files);
-		
-		return ResponseEntity.status(HttpStatus.CREATED).body(true);
+	    } catch (Exception e) {
+	        log.error("상품 등록 실패 - 시스템 에러", e);
+	        return ResponseEntity
+	            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+	            .contentType(MediaType.APPLICATION_JSON_UTF8)
+	            .body("상품 등록 중 오류가 발생했습니다.");
+	    }
 	}
 	
 	/* 
@@ -317,37 +325,46 @@ public class ApiBookController {
 			@RequestPart("files") List<MultipartFile> files) throws Exception {
 		log.info("**상품 수정 처리**");
 		
-		// 1. 전체 파일 크기 체크
-		long totalSize = 0;
-		String maxFileSizeInMB = (maxFileSize / (1024 * 1024)) + "MB";
-		for(MultipartFile file : files) {
-			totalSize += file.getSize();
-			// 2. 개별 파일 크기 체크
-			if(file.getSize() > maxFileSize) {
-				return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-						.contentType(MediaType.APPLICATION_JSON_UTF8)
-						.body("개별 파일 크기가 최대 크기 " + maxFileSizeInMB + "를 초과했습니다");
+		try {
+			// 1. 전체 파일 크기 체크
+			long totalSize = 0;
+			String maxFileSizeInMB = (maxFileSize / (1024 * 1024)) + "MB";
+			for(MultipartFile file : files) {
+				totalSize += file.getSize();
+				// 2. 개별 파일 크기 체크
+				if(file.getSize() > maxFileSize) {
+					return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+							.contentType(MediaType.APPLICATION_JSON_UTF8)
+							.body("개별 파일 크기가 최대 크기 " + maxFileSizeInMB + "를 초과했습니다");
+				}
+				
+				// 3. 파일 타입 체크
+				if (!fileUploadUtil.validateFileType(file)) {
+	                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                		.contentType(MediaType.APPLICATION_JSON_UTF8)
+	                		.body("허용되지 않는 파일 형식입니다. (jpg, jpeg, png, gif 파일만 가능)");
+	            }
 			}
 			
-			// 3. 파일 타입 체크
-			if (!fileUploadUtil.validateFileType(file)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                		.contentType(MediaType.APPLICATION_JSON_UTF8)
-                		.body("허용되지 않는 파일 형식입니다. (jpg, jpeg, png, gif 파일만 가능)");
-            }
-		}
-		
-		// 4. 전체 파일 크기 체크
-		if(totalSize > maxFileSize) {
-			return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-					.contentType(MediaType.APPLICATION_JSON_UTF8)
-					.body("전체 파일 크기가 최대 크기 " + maxFileSizeInMB + "를 초과했습니다");
-		}
-        
-		request.setBook_id(bookId);
-		bookService.update(request, files);
-		
-		return ResponseEntity.status(HttpStatus.OK).body(request);
+			// 4. 전체 파일 크기 체크
+			if(totalSize > maxFileSize) {
+				return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+						.contentType(MediaType.APPLICATION_JSON_UTF8)
+						.body("전체 파일 크기가 최대 크기 " + maxFileSizeInMB + "를 초과했습니다");
+			}
+	        
+			request.setBook_id(bookId);
+			bookService.update(request, files);
+			
+			return ResponseEntity.status(HttpStatus.OK).body(request);
+	            
+	    } catch (Exception e) {
+	        log.error("상품 수정 실패 - 시스템 에러, bookId:" + bookId, e);
+	        return ResponseEntity
+	            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+	            .contentType(MediaType.APPLICATION_JSON_UTF8)
+	            .body("상품 수정 중 오류가 발생했습니다.");
+	    }
 	}
 	
 	/* 
