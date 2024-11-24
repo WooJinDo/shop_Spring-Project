@@ -92,6 +92,7 @@
             , TO_CHAR(REG_DATE, 'YYYY-MM-DD') AS REG_DATE
         FROM UPLOADED_IMAGE
         WHERE IMAGE_ID = #{imageId}
+        AND IS_DELETED = 'N'
     </select>
     
 	<!-- 관리자: 이미지 파일 및 에디터 논리적 삭제 처리 (DB 업데이트) -->

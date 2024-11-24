@@ -17,6 +17,7 @@ import com.shop.dto.ImageDto;
 import com.shop.dto.ImageDto.ImageUploadRequest;
 import com.shop.model.BookVO;
 import com.shop.model.CategoryVO;
+import com.shop.model.ImageVO;
 import com.shop.service.BookService;
 import com.shop.service.ImageService;
 
@@ -220,7 +221,14 @@ public class BookServiceImpl implements BookService {
 		try {
 			// 1. 기존 게시글 조회
 			BookVO oldBook = bookMapper.selectBookDetail(request.getBook_id());
-            
+	        if (oldBook == null) {
+	            throw new RuntimeException("수정할 상품을 찾을 수 없습니다.");
+	        }
+	        
+	        if ("N".equals(oldBook.getUse_flag())) {
+	            throw new RuntimeException("삭제된 상품은 수정할 수 없습니다.");
+	        }
+	        
 	        // 2. 에디터 이미지 처리
 	        // 2-1. 임시 이미지들을 실제 경로로 이동 및 컨텐츠 내용과 url 업데이트(/uploads/temp -> /uploads/editor 경로로)
 			String updatedContents = imageService.moveEditorImagesToRealPath(request.getBook_contents(), "BOOK_CONTENTS");
@@ -271,9 +279,56 @@ public class BookServiceImpl implements BookService {
 	@Transactional
 	@Override
 	public void delete(int bookId) throws Exception {
-		bookMapper.delete(bookId);
-		
-		log.info("삭제 *************************** : " + bookId);
+		try {
+	        // 1. 기존 상품 정보 조회 (에디터 이미지 URL 추출을 위해)
+	        BookVO oldBook = bookMapper.selectBookDetail(bookId);
+	        if(oldBook == null) {
+	            throw new RuntimeException("삭제할 상품을 찾을 수 없습니다.");
+	        }
+
+	        // 2. 상품 정보 논리적 삭제 처리
+	        if("N".equals(oldBook.getUse_flag())) {
+	        	throw new RuntimeException("이미 삭제된 상품입니다.");
+	        }
+	        bookMapper.delete(bookId);
+	        log.info("상품 정보 삭제 완료 - bookId: " + bookId);
+
+	        // 3. 상품 이미지 논리적 삭제 처리
+	        List<ImageDto.ImageUploadResponse> bookImages = 
+	            imageService.selectImagesByRefId("BOOK", (long) bookId);
+	        
+	        for(ImageDto.ImageUploadResponse image : bookImages) {
+	            imageService.softDeleteImage(image.getImage_id());
+	        }
+	        log.info("상품 이미지 삭제 완료 - imageCount: " + bookImages.size());
+
+	        // 4. 에디터 이미지 논리적 삭제 처리
+	        // 4-1. 상품 내용의 에디터 이미지 삭제
+	        List<String> contentUrls = imageService.extractImageUrls(oldBook.getBook_contents(), false);
+	        for(String url : contentUrls) {
+	            String imagePath = url.replace("/uploads/", "");
+	            ImageVO imageVO = imageService.selectImageByPath(imagePath);
+	            if(imageVO != null) {
+	                imageService.softDeleteImage(imageVO.getImage_id());
+	            }
+	        }
+	        
+	        // 4-2. 상품 소개의 에디터 이미지 삭제
+	        List<String> introUrls = imageService.extractImageUrls(oldBook.getBook_intro(), false);
+	        for(String url : introUrls) {
+	            String imagePath = url.replace("/uploads/", "");
+	            ImageVO imageVO = imageService.selectImageByPath(imagePath);
+	            if(imageVO != null) {
+	                imageService.softDeleteImage(imageVO.getImage_id());
+	            }
+	        }
+	        log.info("에디터 이미지 삭제 완료 - contentUrlCount: " + contentUrls.size() + 
+	                ", introUrlCount: " + introUrls.size());
+
+	    } catch (Exception e) {
+	        log.error("상품 삭제 실패 - bookId: " + bookId, e);
+	        throw new RuntimeException("상품 삭제 중 오류가 발생했습니다.", e);
+	    }
 	}
 
 	/**

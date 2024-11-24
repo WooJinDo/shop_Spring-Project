@@ -295,9 +295,17 @@ public class ApiBookController {
 	public ResponseEntity<?> bookDetail(@PathVariable("id") int bookId, Model model) 
 			throws Exception {
 		log.info("**상품 상세 조회 처리**");
-		Map<String, Object> result = bookService.selectBookDetail(bookId);
-		
-		return ResponseEntity.status(HttpStatus.OK).body(result);
+		try {
+			Map<String, Object> result = bookService.selectBookDetail(bookId);
+			return ResponseEntity.status(HttpStatus.OK).body(result);
+			
+	    } catch (Exception e) {
+	        log.error("상품 상세 조회 실패 - bookId: " + bookId, e);
+	        return ResponseEntity
+	            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+	            .contentType(MediaType.APPLICATION_JSON_UTF8)
+	            .body("상품 상세 정보 조회 중 오류가 발생했습니다.");
+	    }
 	}
 	
 	/* 
@@ -350,9 +358,17 @@ public class ApiBookController {
 			throws Exception {
 		log.info("**상품 삭제 처리**");
 		
-		bookService.delete(bookId);
-		
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		try {
+			bookService.delete(bookId);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+			
+	    } catch (Exception e) {
+	        log.error("상품 삭제 실패 - 시스템 에러, bookId: " + bookId, e);
+	        return ResponseEntity
+	            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+	            .contentType(MediaType.APPLICATION_JSON_UTF8)
+	            .body("상품 삭제 중 오류가 발생했습니다.");
+	    }
 	}
 		
 }

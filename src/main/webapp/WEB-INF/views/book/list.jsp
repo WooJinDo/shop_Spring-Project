@@ -433,7 +433,7 @@ $(document).ready(function() {
        });
    }
    
-	/* 카테고리 클릭 시 상품 목록 리스트 로드 함수 */
+	/* 카테고리 클릭 시 상품 목록 및 검색 상품 로드 함수 */
    function loadBookListByCategory(categoryCode, page) {
 		// 폼 데이터를 객체로 변환
 		var formData = {

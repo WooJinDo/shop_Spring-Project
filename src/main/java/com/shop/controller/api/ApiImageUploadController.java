@@ -80,6 +80,7 @@ public class ApiImageUploadController {
             result.put("fileName", file.getOriginalFilename());
             result.put("url", imageUrl);
             log.info("에디터 이미지 업로드 성공 - URL: " + imageUrl);
+            
         } catch (Exception e) {
             log.error("에디터 이미지 업로드 실패 - 파일명: " + file.getOriginalFilename(), e);
             result.put("uploaded", 0);
@@ -100,7 +101,8 @@ public class ApiImageUploadController {
  	        String encodedFileName = URLEncoder.encode(originalFileName, "UTF-8")
  	                                         .replaceAll("\\+", "%20");
  	        
- 	        return ResponseEntity.ok()
+ 	        return ResponseEntity
+ 	        		.status(HttpStatus.OK)
  	                .contentType(MediaType.APPLICATION_OCTET_STREAM)
  	                .header(HttpHeaders.CONTENT_DISPOSITION, 
  	                        "attachment; filename*=UTF-8''" + encodedFileName)
@@ -117,9 +119,17 @@ public class ApiImageUploadController {
 	public ResponseEntity<?> deletekImage(@PathVariable("imageId") Long imageId) throws Exception {
 		log.info("**이미지 삭제 및 썸네일 재설정 처리**");
 		
-		imageService.deleteImageAndReassignThumbnail(imageId);
-	    
-	    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		try {
+			imageService.deleteImageAndReassignThumbnail(imageId);
+		    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		    
+	    } catch (Exception e) {
+	        log.error("이미지 삭제 실패 - 시스템 에러, imageId: " + imageId, e);
+	        return ResponseEntity
+	            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+	            .contentType(MediaType.APPLICATION_JSON_UTF8)
+	            .body("이미지 삭제 중 오류가 발생했습니다.");
+	    }
 	}
  	
 }

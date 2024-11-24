@@ -1230,7 +1230,7 @@ $(document).ready(function() {
 	            method: 'DELETE',
 	            success: function(response) {
 	                // 화면에서 삭제된 이미지 제거
-	                // 기존 이미지 배열에서 삭제한 해당 이미지 제외한 새 배열 생성
+	                // 기존 이미지 배열에서 삭제한 해당 이미지 제외하고 새 배열 생성
 	                var filteredImages = [];
 	                for (var i = 0; i < existingImages.length; i++) {
 	                    if (existingImages[i].image_id !== imageId) {

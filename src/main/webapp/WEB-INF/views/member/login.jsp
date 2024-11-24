@@ -81,7 +81,6 @@
 	<!--/ End Login -->
 	
 <%@ include file="/WEB-INF/views/common/commonFooter.jsp" %>
-<%@ include file="/WEB-INF/views/common/commonJs.jsp" %>
 <script>
 $(document).ready(function() {
 	var flashMsg = "<c:out value='${flashMsg}' />";

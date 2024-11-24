@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,36 +117,42 @@ public class ImageServiceImpl implements ImageService {
         return imageMapper.countThumbnails(imageType, refId) > 0;
     }
 	
-	
-	
 	/**
 	 * 관리자 - 이미지 리스트 조회 (타입 및 참조ID 기준)
 	 */	
 	@Override
 	public List<ImageDto.ImageUploadResponse> selectImagesByRefId(String imageType, Long refId) throws Exception {
 		try {
-			// 1. 이미지 조회
-			List<ImageVO> voList;
-			if("EDITOR".equals(imageType)) {
-				// EDITOR 타입일 경우 refId는 무시하고 null로 조회
-				voList = imageMapper.selectImagesByRefId(imageType, null);
-			} else {
-				// BOOK 등 다른 타입은 refId로 조회
-				voList = imageMapper.selectImagesByRefId(imageType, refId);
-			}
 			
-			// 2. VO를 DTO로 변환
+	        // 1. 입력값 검증
+	        if (imageType == null || imageType.trim().isEmpty()) {
+	            throw new RuntimeException("이미지 타입이 유효하지 않습니다.");
+	        }
+	        if (refId == null || refId <= 0) {
+	            throw new RuntimeException("참조 ID가 필요합니다.");
+	        }
+	        
+			// 2. 이미지 조회 (BOOK 등 다른 타입과 refId로 조회) 
+			List<ImageVO> voList = imageMapper.selectImagesByRefId(imageType, refId);
+			
+			// 3. VO를 DTO로 변환
 			List<ImageDto.ImageUploadResponse> dtoList = new ArrayList<>();
 			for(ImageVO vo : voList) {
 				dtoList.add(ImageDto.ImageUploadResponse.from(vo));
 			}
 			
+            // 4. 조회 결과 로깅
+            log.info("이미지 조회 완료 - type: " + imageType + ", refId: " + refId + ", totalCount: " + dtoList.size());
+            
 			return dtoList;
 			
-		} catch (Exception e) {
-	        log.error("이미지 리스트 조회 실패 - imageType:" + imageType + ", refId:" + refId,  e);
-	        throw new RuntimeException("이미지 리스트 조회 중 오류가 발생했습니다.", e);
-	    }
+        } catch (RuntimeException e) {
+            log.error("이미지 리스트 조회 실패 - type: " + imageType + ", refId: " + refId, e);
+            throw e;
+        } catch (Exception e) {
+            log.error("이미지 리스트 조회 중 오류 발생 - type: " + imageType + ", refId: " + refId, e);
+            throw new RuntimeException("이미지 리스트 조회 중 오류가 발생했습니다.", e);
+        }
 	}
 	
 	/**
@@ -241,6 +248,7 @@ public class ImageServiceImpl implements ImageService {
 	/**
 	 * 관리자 - 에디터 이미지 임시 업로드
 	 */    
+	@Transactional
 	@Override
     public String uploadTempEditorImage(MultipartFile file, String editorType) throws Exception {
         try {
@@ -284,6 +292,9 @@ public class ImageServiceImpl implements ImageService {
     public String moveEditorImagesToRealPath(String content, String editorType) throws Exception {
         if(content == null || content.isEmpty()) {
             return content;
+        }
+        if (editorType == null || editorType.trim().isEmpty()) {
+            throw new RuntimeException("에디터 타입이 유효하지 않습니다.");
         }
         
         List<String> imageUrls = extractImageUrls(content, true);
@@ -353,21 +364,105 @@ public class ImageServiceImpl implements ImageService {
      * 관리자 - 에디터 내용에서 이미지 URL 추출
      * isTemp true: 임시경로 패턴, false: 실제경로 패턴
      */
-	public List<String> extractImageUrls(String content, boolean isTemp) {
-        List<String> urls = new ArrayList<>();
-        if(content == null || content.isEmpty()) {
-            return urls;
-        }
+	@Override
+	public List<String> extractImageUrls(String content, boolean isTemp) throws Exception {
+		
+		try {
+	        List<String> urls = new ArrayList<>();
+	        
+	        // 1. 입력값 검증
+	        if(content == null || content.isEmpty()) {
+	            return urls;
+	        }
+	        
+	        // 2. URL 패턴 설정 및 매칭
+	        // 2-1. /uploads/temp/ or /uploads/editor/ 경로로 시작하는 URL을 찾습니다
+	        String patternString = isTemp ? TEMP_PATH_PATTERN : REAL_PATH_PATTERN;
+	        Pattern pattern = Pattern.compile(patternString);
+	        Matcher matcher = pattern.matcher(content); // content 안에서 정규표현식에 맞는 부분을 검색
+	        
+	        // 3. URL 추출
+	        while(matcher.find()) {	// 정규표현식에 맞는 부분을 찾으면 matcher.group()으로 해당 문자열을 추출하여 urls 리스트에 추가
+	            urls.add(matcher.group());
+	        }
+	        
+	        log.info("이미지 URL 추출 완료 - count: " + urls.size());
+	        return urls;
         
-        // 1. /uploads/temp/ or /uploads/editor/ 경로로 시작하는 URL을 찾습니다
-        String patternString = isTemp ? TEMP_PATH_PATTERN : REAL_PATH_PATTERN;
-        Pattern pattern = Pattern.compile(patternString);
-        Matcher matcher = pattern.matcher(content); // content 안에서 정규표현식에 맞는 부분을 검색
-        
-        while(matcher.find()) {	// 정규표현식에 맞는 부분을 찾으면 matcher.group()으로 해당 문자열을 추출하여 urls 리스트에 추가
-            urls.add(matcher.group());
-        }
-        return urls;
+	    } catch (PatternSyntaxException e) {
+	        log.error("URL 패턴 매칭 실패", e);
+	        throw new RuntimeException("URL 패턴 매칭 중 오류가 발생했습니다.", e);
+	    } catch (Exception e) {
+	        log.error("이미지 URL 추출 중 오류 발생", e);
+	        throw new RuntimeException("이미지 URL 추출 중 오류가 발생했습니다.", e);
+	    }
     }
+
+    /**
+     * 관리자 - 논리적 삭제 처리 (DB 업데이트)
+     */
+	@Override
+	public void softDeleteImage(Long imageId) throws Exception {
+		try {
+	        // 1. 이미지 존재 여부 확인
+	        ImageVO image = imageMapper.selectImage(imageId);
+	        if (image == null) {
+	            throw new RuntimeException("삭제할 이미지를 찾을 수 없습니다.");
+	        }
+	        
+	        // 2. 이미지가 이미 삭제되었는지 확인
+	        if ("Y".equals(image.getIs_deleted())) {
+	            throw new RuntimeException("이미 삭제된 이미지입니다.");
+	        }
+	        
+	        // 3. 논리적 삭제 처리
+	        imageMapper.softDeleteImage(imageId);
+	        log.info("이미지 논리적 삭제 완료 - imageId: " + imageId + ", imageType: " + image.getImage_type());
+	        
+	    } catch (RuntimeException e) {
+	        log.error("이미지 논리적 삭제 실패 - imageId: " + imageId, e);
+	        throw e;
+	    } catch (Exception e) {
+	        log.error("이미지 논리적 삭제 중 오류 발생 - imageId: " + imageId, e);
+	        throw new RuntimeException("이미지 삭제 처리 중 오류가 발생했습니다.", e);
+	    }
+	}
+	
+	 /**
+     * 관리자 - 이미지 경로로 이미지 정보 조회
+     */
+	@Override
+	public ImageVO selectImageByPath(String imagePath) throws Exception {
+		
+	    try {
+	        // 1. 입력값 검증
+	        if (imagePath == null || imagePath.trim().isEmpty()) {
+	            throw new RuntimeException("이미지 경로가 유효하지 않습니다.");
+	        }
+	        
+	        // 2. 이미지 정보 조회
+	        ImageVO imageVO = imageMapper.selectImageByPath(imagePath.trim());
+	        
+	        // 3. 조회 결과 로깅
+	        if (imageVO != null) {
+	            log.info("이미지 경로로 이미지 조회 성공 - imagePath: " + imagePath + 
+	                    ", imageId: " + imageVO.getImage_id());
+	        } else {
+	        	log.error("이미지 경로에 해당하는 이미지를 찾을 수 없습니다 - imagePath: " + imagePath);
+	        	throw new RuntimeException("이미지 경로에 해당하는 이미지를 찾을 수 없습니다.");
+	        }
+	        
+	        return imageVO;
+	        
+	    } catch (RuntimeException e) {
+	        log.error("이미지 경로로 이미지 조회 실패 - imagePath: " + imagePath, e);
+	        throw e;
+	    } catch (Exception e) {
+	        log.error("이미지 경로로 이미지 조회 중 오류 발생 - imagePath: " + imagePath, e);
+	        throw new RuntimeException("이미지 정보 조회 중 오류가 발생했습니다.", e);
+	    }
+	}
+	
+	
 	
 }
