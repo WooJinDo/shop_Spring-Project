@@ -20,8 +20,8 @@
 [작가 관리 기능 시연]
 
 
+https://github.com/user-attachments/assets/e0f8958d-ca10-4edf-a83d-95778b4e4c37
 
-https://github.com/user-attachments/assets/a2da5cde-22ee-4d10-91e3-9db116b13f40
 
 <br/>
 
@@ -35,14 +35,14 @@ https://github.com/user-attachments/assets/a2da5cde-22ee-4d10-91e3-9db116b13f40
 [상품 관리 기능 시연]
 
 
-https://github.com/user-attachments/assets/dd6e4153-3a8f-46f3-83f6-e6b1e1bc19bf
+https://github.com/user-attachments/assets/f2859228-90a1-4f6f-8b06-1b434b35d3e2
 
 
 [임시 저장된 이미지의 실제 저장소 이동]
 
-![1](https://github.com/user-attachments/assets/eaa89099-8f24-477b-b932-4a22c77c4924)
+![1](https://github.com/user-attachments/assets/0033718c-54e9-46eb-92a8-a5ee48a20cbb)
 
-![2](https://github.com/user-attachments/assets/5ee789e8-bffd-46be-a7f9-0f6e287435cb)
+![2](https://github.com/user-attachments/assets/5adea203-c3bc-4149-ad55-1da9b22cbfdf)
 
 
 <br/>
@@ -56,9 +56,10 @@ https://github.com/user-attachments/assets/dd6e4153-3a8f-46f3-83f6-e6b1e1bc19bf
 [회원 관리 기능 시연]
 
 
-https://github.com/user-attachments/assets/dadcc622-bd9b-493d-b650-c40efd75afd0
+https://github.com/user-attachments/assets/27046566-a46a-4efc-b2bf-cd2debb7ced2
 
-https://github.com/user-attachments/assets/55c433b2-8beb-4ff0-b10e-b26b0616cc32
+https://github.com/user-attachments/assets/7b7c445a-d4f7-4267-882f-4a7a097fb470
+
 
 <br/>
 
@@ -72,13 +73,17 @@ https://github.com/user-attachments/assets/55c433b2-8beb-4ff0-b10e-b26b0616cc32
 
 [회원가입 프로세스 시연]
 
-https://github.com/user-attachments/assets/079318e4-a8fd-4dae-9438-31e0ef1c0b72
 
-![이메일 인증](https://github.com/user-attachments/assets/5ed1c8a1-c976-4f64-acaf-13f8b0864f68)
-	
+https://github.com/user-attachments/assets/6e35e38c-9726-4aea-bb0b-9dc17b402fd0
+
+![이메일 인증](https://github.com/user-attachments/assets/be143683-a372-49a1-837e-c749a6a0dad6)
+
+
 [권한별 페이지 접근 및 세션만료 프로세스 시연]
 
-https://github.com/user-attachments/assets/786d432e-27bf-4d4b-9b06-e32c0e8d299e
+
+https://github.com/user-attachments/assets/4c851dbd-4695-41a5-8e70-c178a390b03e
+
 
 <br/>
 
@@ -91,7 +96,9 @@ https://github.com/user-attachments/assets/786d432e-27bf-4d4b-9b06-e32c0e8d299e
 
 [상품 조회 기능 시연]
 
-https://github.com/user-attachments/assets/cf210676-5bc4-4aa1-94c5-25e35400fe66
+
+https://github.com/user-attachments/assets/bb4465c1-0120-4b9e-9386-68a79f0f6095
+
 
 <br/>
 
@@ -103,7 +110,9 @@ https://github.com/user-attachments/assets/cf210676-5bc4-4aa1-94c5-25e35400fe66
 
 [장바구니 기능 시연]
 
-https://github.com/user-attachments/assets/740a2f67-4067-4eb0-9dea-1409c3aa50e2
+
+https://github.com/user-attachments/assets/7261ad74-59f7-4f46-aa88-782d788c280b
+
 
 <br/>
   
