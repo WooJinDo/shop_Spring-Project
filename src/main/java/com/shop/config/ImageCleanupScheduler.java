@@ -28,7 +28,7 @@ public class ImageCleanupScheduler {
      * 일반 이미지 정리 - 매일 새벽 2시 실행
      * 삭제된지 7일 지난 이미지 물리적 삭제 처리
      */
-//    @Scheduled(cron = "0 */3 * * * *") // 1분마다 실행 (초 분 시 일 월 요일)
+//    @Scheduled(cron = "0 */1 * * * *") // 1분마다 실행 (초 분 시 일 월 요일)
     @Scheduled(cron = "0 0 2 * * *") // 매일 새벽 2시에 실행 (초 분 시 일 월 요일)
     public void cleanupDeletedImages() {
     	try {

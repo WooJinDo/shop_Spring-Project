@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,21 +37,30 @@ public class ApiAuthorController {
 	public ResponseEntity<?> authorList(AuthorDto.AuthorSearchRequest request) throws Exception {
 		log.info("**작가 리스트 조회 처리**");
 		
-		int totalItems = authorService.selectTotalCount(request);	// 전체 게시글 수
-		// 페이징 정보 계산
-		PagingUtil pagingUtil = new PagingUtil(request.getCurrentPage(), request.getItemsPerPage(), totalItems);
-		
-		// 페이징된 작가 리스트
-		request.setOffset(pagingUtil.getOffset());
-		request.setLimit(pagingUtil.getLimit());
-		List<AuthorDto.AuthorListResponse> authorList = authorService.selectAuthorList(request);
-		
-		Map<String, Object> response = new HashMap<>();
-		response.put("totalCount", totalItems);
-		response.put("paging", pagingUtil);
-		response.put("authorList", authorList);
-		
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		try {
+			int totalItems = authorService.selectTotalCount(request);	// 전체 게시글 수
+			// 페이징 정보 계산
+			PagingUtil pagingUtil = new PagingUtil(request.getCurrentPage(), request.getItemsPerPage(), totalItems);
+			
+			// 페이징된 작가 리스트
+			request.setOffset(pagingUtil.getOffset());
+			request.setLimit(pagingUtil.getLimit());
+			List<AuthorDto.AuthorListResponse> authorList = authorService.selectAuthorList(request);
+			
+			Map<String, Object> response = new HashMap<>();
+			response.put("totalCount", totalItems);
+			response.put("paging", pagingUtil);
+			response.put("authorList", authorList);
+			
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+			
+	    } catch (Exception e) {
+	        log.error("작가 리스트 조회 실패", e);
+	        return ResponseEntity
+	        		.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	        		.contentType(MediaType.APPLICATION_JSON_UTF8)
+	        		.body("작가 리스트 조회 중 오류가 발생했습니다.");
+	    }
 	}
 	
 	// 관리자 - 작가 상세 조회
@@ -59,9 +69,18 @@ public class ApiAuthorController {
 			throws Exception {
 		log.info("**작가 상세 조회 처리**");
 		
-		AuthorDto.AuthorDetailResponse authorDetailResponse = authorService.selectAuthorDetail(authorId);
-		
-		return ResponseEntity.status(HttpStatus.OK).body(authorDetailResponse);
+		try {
+			AuthorDto.AuthorDetailResponse authorDetailResponse = authorService.selectAuthorDetail(authorId);
+			
+			return ResponseEntity.status(HttpStatus.OK).body(authorDetailResponse);
+			
+        } catch (Exception e) {
+            log.error("작가 상세 조회 실패", e);
+	        return ResponseEntity
+	        		.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	        		.contentType(MediaType.APPLICATION_JSON_UTF8)
+	        		.body("작가 상세 조회 중 오류가 발생했습니다.");
+        }
 	}
 	
 	// 관리자 - 작가 등록
@@ -70,9 +89,18 @@ public class ApiAuthorController {
 			throws Exception {
 		log.info("**작가 등록 처리**");
 		
-		authorService.add(request);
-		
-		return ResponseEntity.status(HttpStatus.CREATED).body(request);
+		try {
+			authorService.add(request);
+			
+			return ResponseEntity.status(HttpStatus.CREATED).body(request);
+			
+        } catch (Exception e) {
+        	log.error("작가 등록 실패", e);
+	        return ResponseEntity
+	        		.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	        		.contentType(MediaType.APPLICATION_JSON_UTF8)
+	        		.body("작가 등록 중 오류가 발생했습니다.");
+        }
 	}
 	
 	// 관리자 - 작가 수정
@@ -81,10 +109,19 @@ public class ApiAuthorController {
 			@RequestBody AuthorDto.AuthorUpdateRequest request) throws Exception {
 		log.info("**작가 수정 처리**");
 		
-		request.setAuthor_id(authorId);
-		authorService.update(request);
-		
-		return ResponseEntity.status(HttpStatus.OK).body(request);
+		try {
+			request.setAuthor_id(authorId);
+			authorService.update(request);
+			
+			return ResponseEntity.status(HttpStatus.OK).body(request);
+			
+        } catch (Exception e) {
+        	log.error("작가 수정 실패", e);
+	        return ResponseEntity
+	        		.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	        		.contentType(MediaType.APPLICATION_JSON_UTF8)
+	        		.body("작가 수정 중 오류가 발생했습니다.");
+        }
 	}
 	
 	// 관리자 - 작가 삭제
@@ -93,9 +130,21 @@ public class ApiAuthorController {
 			throws Exception {
 		log.info("**작가 삭제 처리**");
 		
-		authorService.delete(authorId);
+		try {
+			authorService.delete(authorId);
+			
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+			
+        } catch (Exception e) {
+        	log.error("작가 삭제 실패", e);
+	        return ResponseEntity
+	        		.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	        		.contentType(MediaType.APPLICATION_JSON_UTF8)
+	        		.body("작가 삭제 중 오류가 발생했습니다.");
+        }
 		
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		
+		
 	}
 	
 }

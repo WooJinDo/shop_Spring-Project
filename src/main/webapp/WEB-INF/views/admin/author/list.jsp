@@ -177,7 +177,11 @@ $(document).ready(function() {
             },
             error: function(xhr, status, error) {
                 console.error("리스트 조회 실패: " + status + ", " + error);
-                alert("리스트 조회에 실패하였습니다.");
+                if(xhr.responseText) {
+                    alert(xhr.responseText);
+                } else {
+                	alert("리스트 조회에 실패하였습니다.");
+                }
             }
         });
     }
@@ -247,7 +251,11 @@ $(document).ready(function() {
                 },
                 error: function(xhr, status, error) {
                     console.error('삭제 실패: ' + status + ', ' + error);
-                    alert('삭제에 실패했습니다. 다시 시도해주세요.');
+                    if(xhr.responseText) {
+                        alert(xhr.responseText);
+                    } else {
+                    	alert('삭제에 실패했습니다. 다시 시도해주세요.');
+                    }
                 }
             });
         }

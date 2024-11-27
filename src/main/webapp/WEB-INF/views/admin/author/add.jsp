@@ -122,7 +122,11 @@ $(document).ready(function() {
 				  },
 				  error: function(xhr, status, error) { // 실패 시 실행되는 함수
 					  console.error("등록 실패: " + status + ", " + error);     // 에러 처리
-					alert("작가 등록에 실패하였습니다.");
+	                  if(xhr.responseText) {
+	                      alert(xhr.responseText);
+	                  } else {
+	                	  alert("작가 등록에 실패하였습니다.");
+	                  }
 				  }
 			}); 
 		}

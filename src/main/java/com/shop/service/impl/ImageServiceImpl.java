@@ -97,7 +97,7 @@ public class ImageServiceImpl implements ImageService {
                         // 6. DB에 이미지 정보 저장
                         imageMapper.insertImage(imageVo);
                         
-                    	// 7. BOOK 타입이고 썸네일로 설정되었다면 플래그 업데이트
+                    	// 7. 썸네일 타입이고, 썸네일로 설정되었다면 플래그 업데이트
                         if(needThumbnail && shouldBeThumbnail) {
                             hasExistingThumbnail = true;
                         }

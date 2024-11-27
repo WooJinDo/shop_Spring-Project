@@ -549,7 +549,11 @@ $(document).ready(function() {
             },
             error: function(xhr, status, error) {
                 console.error("리스트 조회 실패: " + status + ", " + error);
-                alert("리스트 조회에 실패하였습니다.");
+                if(xhr.responseText) {
+                    alert(xhr.responseText);
+                } else {
+                	alert("리스트 조회에 실패하였습니다.");
+                }
             }
         });
     }

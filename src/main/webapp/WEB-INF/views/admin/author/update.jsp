@@ -105,7 +105,11 @@ $(document).ready(function() {
     		},
 			error: function(xhr, status, error) { // 실패 시 실행되는 함수
 				console.error("상세조회 실패: " + status + ", " + error);     // 에러 처리
-				alert("상세 조회에 실패하였습니다.");
+                if(xhr.responseText) {
+                    alert(xhr.responseText);
+                } else {
+                	alert("상세 조회에 실패하였습니다.");
+                }
 			}
 	    });
 	}
@@ -138,7 +142,11 @@ $(document).ready(function() {
 				  },
 				  error: function(xhr, status, error) { // 실패 시 실행되는 함수
 				  	console.error("수정 실패: " + status + ", " + error);     // 에러 처리
-					alert("작가 수정에 실패하였습니다.");
+	                if(xhr.responseText) {
+	                    alert(xhr.responseText);
+	                } else {
+	                	alert("작가 수정에 실패하였습니다.");
+	                }
 				  }
 			}); 
 		}
