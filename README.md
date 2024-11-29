@@ -118,7 +118,7 @@ https://github.com/user-attachments/assets/7261ad74-59f7-4f46-aa88-782d788c280b
   
 ## 💡 핵심 구현 내용
 
-### 1. RESTful API 설계
+### 1. REST API 설계
 ```java
 @RestController
 @RequestMapping("/api/book")
@@ -432,7 +432,7 @@ function modalAuthorList(page) {
 ### 1. 프론트엔드
 - **비동기 통신**
   - jQuery와 Ajax를 활용한 실시간 데이터 처리
-  - RESTful API 호출 및 JSON 기반 데이터 통신
+  - REST API 호출 및 JSON 기반 데이터 통신
   - 비동기 파일 업로드 처리
 
 - **사용자 경험(UX) 최적화**
@@ -444,7 +444,7 @@ function modalAuthorList(page) {
 
 ### 2. 백엔드
 - **Spring MVC 기반 설계**
-  - RESTful API 아키텍처 구현
+  - REST API 아키텍처 구현
   - HTTP Methods(GET/POST/PUT/DELETE) 기반 엔드포인트 설계
 
 - **데이터 접근 계층**
@@ -477,7 +477,7 @@ function modalAuthorList(page) {
 
 ### 성과
 - Spring MVC 아키텍처를 활용한 확장 가능한 웹 애플리케이션 구현
-- RESTful API 설계를 통한 효율적인 데이터 통신 구현
+- REST API 설계를 통한 효율적인 데이터 통신 구현
 - MyBatis 동적 쿼리를 활용한 효율적인 데이터베이스 처리
 - 체계적인 예외 처리와 트랜잭션 관리
 
