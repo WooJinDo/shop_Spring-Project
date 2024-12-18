@@ -130,7 +130,7 @@ $(document).ready(function() {
         };
 
         $.ajax({
-            url: '/api/book',
+            url: '/api/books',
             method: 'GET',
             dataType: 'json',		// 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
             data: formData,
@@ -237,7 +237,7 @@ $(document).ready(function() {
         
         if (confirm('정말로 삭제하시겠습니까?')) {
             $.ajax({
-                url: '/api/book/' + bookId, 
+                url: '/api/books/' + bookId, 
                 method: 'DELETE', 
                 success: function(response) {
                     alert('상품이 성공적으로 삭제되었습니다.');

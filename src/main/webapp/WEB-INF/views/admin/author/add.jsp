@@ -110,7 +110,7 @@ $(document).ready(function() {
 			};
 			
 			$.ajax({
-				  url: "/api/author",  				// 요청을 보낼 URL
+				  url: "/api/authors",  				// 요청을 보낼 URL
 				  type: "POST",                         // HTTP 메서드 (GET, POST 등)
 				  dataType: "json",                     // 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
 				  contentType: 'application/json; charset=utf-8',     // 콘텐츠 타입을 JSON으로 설정 - 클라이언트(브라우저)에서 서버로 보내는 데이터의 형식

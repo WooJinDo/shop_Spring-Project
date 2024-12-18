@@ -521,7 +521,7 @@ customEditor.ClassicEditor
     .create(document.querySelector('#book_contents'), {
         ...customEditor.editorConfig,
         ckfinder: {
-            uploadUrl: '/api/editor/upload?type=BOOK_CONTENTS'  // 다른 타입 지정
+            uploadUrl: '/api/images/editor?type=BOOK_CONTENTS'  // 다른 타입 지정
         }
     })
 	.then(function(editor) {
@@ -538,7 +538,7 @@ customEditor.ClassicEditor
     .create(document.querySelector('#book_intro'), {
         ...customEditor.editorConfig,
         ckfinder: {
-            uploadUrl: '/api/editor/upload?type=BOOK_INTRO'  // 타입 지정
+            uploadUrl: '/api/images/editor?type=BOOK_INTRO'  // 타입 지정
         }
     })
 	.then(function(editor) {
@@ -566,7 +566,7 @@ $(document).ready(function() {
 	/* 상품 상세 조회 */
 	function bookDetail() {
 	    $.ajax({
-	        url: '/api/book/' + book_id,
+	        url: '/api/books/' + book_id,
 	        method: 'GET',
 	        dataType: "json",                     // 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
 	        success: function(response) {
@@ -645,7 +645,7 @@ $(document).ready(function() {
         };
 
         $.ajax({
-            url: '/api/author',
+            url: '/api/authors',
             method: 'GET',
             dataType: 'json',		// 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
             data: formData,
@@ -752,7 +752,7 @@ $(document).ready(function() {
     /* 상세 페이지 로드 시 카테고리 정보 초기화 */
     function initializeDetailCategory(categoryCode) {
         $.ajax({
-            url: '/api/book/category',
+            url: '/api/books/categories',
             method: 'GET',
             dataType: 'json',
             success: function(response) {
@@ -1189,7 +1189,7 @@ $(document).ready(function() {
 	            });
 				
 				$.ajax({
-					  url: "/api/book/" + book_id,  				// 요청을 보낼 URL
+					  url: "/api/books/" + book_id,  				// 요청을 보낼 URL
 					  type: "POST",                         // HTTP 메서드 (GET, POST 등)
 					  data: formData,
 			          processData: false,  // FormData 처리 방지
@@ -1226,7 +1226,7 @@ $(document).ready(function() {
 	    if (confirm('이미지를 삭제하시겠습니까?')) {
 	        // AJAX로 이미지 삭제 요청
 	        $.ajax({
-	            url: '/api/image/' + imageId,
+	            url: '/api/images/' + imageId,
 	            method: 'DELETE',
 	            success: function(response) {
 	                // 화면에서 삭제된 이미지 제거

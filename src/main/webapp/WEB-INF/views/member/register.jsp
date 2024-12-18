@@ -243,8 +243,8 @@ $(document).ready(function() {
 		
 		if(validateEmail()){					// 이메일 유효성 검사
 			$.ajax({
-				  url: "/api/memberEmailChk",  			// 요청을 보낼 URL
-				  type: "GET",                          // HTTP 메서드 (GET, POST 등)
+				  url: "/api/members/verification-codes",  			// 요청을 보낼 URL
+				  type: "POST",                          // HTTP 메서드 (GET, POST 등)
 				  dataType: "json",                     // 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
 				  data: {email : email},   				//쿼리 파라미터 형식
 				  success: function(response) {         // 성공 시 실행되는 함수
@@ -270,17 +270,15 @@ $(document).ready(function() {
 	var debounceTimer;	// 함수 바깥에 선언하면, 입력 이벤트 간에 타이머를 공유할 수 있어 중복된 서버 요청을 방지
 	$('.id_input').on("input", function(){
 		clearTimeout(debounceTimer);  				// 이벤트가 다시 발생할 때 이전 타이머를 제거
-		var data = {user_id: $('#user_id').val()};	// 폼 데이터를 객체로 변환
+		var user_id = $('#user_id').val();
 		
 		$('.id_input_msg').text('').removeAttr('style');	// text 초기화 및 모든 인라인 스타일 제거
 		if(validateUserId()) {							// 아이디 유효성 검사
 			debounceTimer = setTimeout(function() {		// 새로운 타이머 설정(지속적으로 이벤트를 발생시키는 상황에서 이벤트 호출을 지연)
 				$.ajax({
-					  url: "/api/memberIdChk",  		    // 요청을 보낼 URL
-					  type: "POST",                         // HTTP 메서드 (GET, POST 등)
+					  url: "/api/members/" + user_id + "/exists",  		    // 요청을 보낼 URL
+					  type: "GET",                         // HTTP 메서드 (GET, POST 등)
 					  dataType: "json",                     // 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
-					  contentType: 'application/json; charset=utf-8',     // 콘텐츠 타입을 JSON으로 설정 - 클라이언트(브라우저)에서 서버로 보내는 데이터의 형식
-					  data: JSON.stringify(data),   		// 직렬화된 데이터를 JSON 형식으로 변환
 					  success: function(response) {         // 성공 시 실행되는 함수
 						console.log(response);              // 응답 데이터 처리
 						if(response.idChk == 'Y'){
@@ -320,7 +318,7 @@ $(document).ready(function() {
 			};
 			
 			$.ajax({
-				  url: "/api/register",  				// 요청을 보낼 URL
+				  url: "/api/members",  				// 요청을 보낼 URL
 				  type: "POST",                         // HTTP 메서드 (GET, POST 등)
 				  dataType: "json",                     // 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
 				  contentType: 'application/json; charset=utf-8',     // 콘텐츠 타입을 JSON으로 설정 - 클라이언트(브라우저)에서 서버로 보내는 데이터의 형식

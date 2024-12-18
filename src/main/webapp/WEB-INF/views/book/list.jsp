@@ -339,7 +339,7 @@ $(document).ready(function() {
    /* 대분류 카테고리 로드 */
    function loadMainCategoryList() {
        $.ajax({
-           url: '/api/book/category/tier/1',
+           url: '/api/books/categories/tier/1',
            method: 'GET',
            success: function(response) {
                var html = '';
@@ -378,7 +378,7 @@ $(document).ready(function() {
    /* 중분류 카테고리 로드 */
    function loadSubCategoryList(parentCode) {
        $.ajax({
-           url: '/api/book/category/sub/' + parentCode,
+           url: '/api/books/categories/' +  + parentCode + '/subcategories',
            method: 'GET',
            success: function(response) {
                var html = '';
@@ -411,7 +411,7 @@ $(document).ready(function() {
    /* 소분류 카테고리 로드 */
    function loadLastCategoryList(parentCode) {
        $.ajax({
-           url: '/api/book/category/sub/' + parentCode,
+    	   url: '/api/books/categories/' +  + parentCode + '/subcategories',
            method: 'GET',
            success: function(response) {
                var html = '';
@@ -444,7 +444,7 @@ $(document).ready(function() {
 		};
         
 		$.ajax({
-			url: '/api/book/category/' + categoryCode,
+			url: '/api/books/categories/' + categoryCode + '/books',
 			method: 'GET',
 			dataType: 'json',		// 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
 			data: formData,
@@ -705,7 +705,7 @@ $(document).ready(function() {
        };
 
        $.ajax({
-           url: '/api/cart',
+           url: '/api/carts',
            type: 'POST',
            contentType: 'application/json; charset=utf-8',		// 클라이언트(브라우저)에서 서버로 보내는 데이터의 형식
            data: JSON.stringify(cartData),

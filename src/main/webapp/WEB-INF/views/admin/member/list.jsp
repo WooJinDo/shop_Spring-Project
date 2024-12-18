@@ -181,7 +181,7 @@ $(document).ready(function() {
     		};
         
         $.ajax({
-            url: '/api/member',
+            url: '/api/members',
             method: 'GET',
             dataType: 'json',		// 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
             data: formData,
@@ -240,8 +240,13 @@ $(document).ready(function() {
                 history.pushState(null, '', newUrl);
             },
             error: function(xhr, status, error) {
-                console.error("리스트 조회 실패: " + status + ", " + error);
-                alert("리스트 조회에 실패하였습니다.");
+            	console.error("리스트 조회 실패: " + status + ", " + error);
+                // 서버에서 전달된 메시지 출력
+                if (xhr.responseText) {
+                    alert(xhr.responseText);
+                } else {
+                	alert("리스트 조회에 실패하였습니다.");
+                }
             }
         });
     }

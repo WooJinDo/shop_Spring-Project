@@ -316,7 +316,7 @@ $(document).ready(function() {
 	/* 상품 상세 조회 */
 	function memberDetail() {
 	    $.ajax({
-	        url: '/api/member/' + user_id,
+	        url: '/api/members/' + user_id,
 	        method: 'GET',
 	        dataType: "json",                     // 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
 	        success: function(response) {
@@ -366,7 +366,7 @@ $(document).ready(function() {
                 };
                 
                 $.ajax({
-                    url: '/api/member/' + user_id,
+                    url: '/api/members/' + user_id,
                     method: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(formData),

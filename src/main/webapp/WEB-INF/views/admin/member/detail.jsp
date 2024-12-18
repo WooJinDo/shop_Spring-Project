@@ -207,7 +207,7 @@ $(document).ready(function() {
 		};
 		
 	    $.ajax({
-	        url: '/api/member/' + user_id,
+	        url: '/api/members/' + user_id,
 	        method: 'GET',
 	        dataType: "json",                     // 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
 	        success: function(response) {
@@ -254,7 +254,7 @@ $(document).ready(function() {
   	$('#btn_delete').on('click', function(e) {	
         if (confirm('정말로 이 회원을 탈퇴 처리하시겠습니까?')) {
             $.ajax({
-                url: '/api/member/' + user_id, 
+                url: '/api/members/' + user_id, 
                 method: 'DELETE', 
                 success: function(response) {
                 	alert('회원 탈퇴 처리가 완료되었습니다.');

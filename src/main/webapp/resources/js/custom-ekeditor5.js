@@ -175,7 +175,7 @@ const editorConfig = {
 		]
 	},
 	ckfinder: {
-            uploadUrl: '/api/editor/upload'
+            uploadUrl: '/api/images/editor'
     },
 	/**initialData:'<span>내용을 입력해 주세요.</span>',**/
 	language: 'ko',

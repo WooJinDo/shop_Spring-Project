@@ -455,7 +455,7 @@ customEditor.ClassicEditor
     .create(document.querySelector('#book_contents'), {
         ...customEditor.editorConfig,
         ckfinder: {
-            uploadUrl: '/api/editor/upload?type=BOOK_CONTENTS'  // 다른 타입 지정
+            uploadUrl: '/api/images/editor?type=BOOK_CONTENTS'  // 다른 타입 지정
         }
     })
     .then(function(editor) {
@@ -470,7 +470,7 @@ customEditor.ClassicEditor
     .create(document.querySelector('#book_intro'), {
         ...customEditor.editorConfig,
         ckfinder: {
-            uploadUrl: '/api/editor/upload?type=BOOK_INTRO'  // 타입 지정
+            uploadUrl: '/api/images/editor?type=BOOK_INTRO'  // 타입 지정
         }
     })
     .then(function(editor) {
@@ -519,7 +519,7 @@ $(document).ready(function() {
         };
 
         $.ajax({
-            url: '/api/author',
+            url: '/api/authors',
             method: 'GET',
             dataType: 'json',		// 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
             data: formData,
@@ -627,7 +627,7 @@ $(document).ready(function() {
     /* 카테고리 리스트 조회 */
     function categoryList() {
         $.ajax({
-            url: '/api/book/category',
+            url: '/api/books/categories',
             method: 'GET',
             dataType: 'json',		// 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
             success: function(response) {
@@ -948,7 +948,7 @@ $(document).ready(function() {
             });
 			
 			$.ajax({
-				   url: "/api/book",
+				   url: "/api/books",
 		           type: "POST",
 		           data: formData,
 		           processData: false,  // FormData 처리 방지

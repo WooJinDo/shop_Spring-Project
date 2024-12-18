@@ -285,7 +285,7 @@ $(document).ready(function() {
 	/* 게시글 상세 조회 */
 	function bookDetail() {
 	    $.ajax({
-	        url: '/api/book/' + book_id,
+	        url: '/api/books/' + book_id,
 	        method: 'GET',
 	        dataType: "json",                     // 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
 	        success: function(response) {
@@ -347,7 +347,7 @@ $(document).ready(function() {
 		            fileListHtml += '<td>' + validImageCount + '</td>';
 		            fileListHtml += '<td>' + img.original_name + '</td>';
 		            fileListHtml += '<td>' + img.reg_date + '</td>';
-		            fileListHtml += '<td><a href="/api/download/' + img.image_id + '" class="download-link">다운로드</a></td>';
+		            fileListHtml += '<td><a href="/api/images/' + img.image_id + '/download " class="download-link">다운로드</a></td>';
 		            fileListHtml += '</tr>';
 	        	}
 	        });
@@ -372,7 +372,7 @@ $(document).ready(function() {
     /* 상세 페이지 로드 시 카테고리 정보 초기화 */
     function initializeDetailCategory(categoryCode) {
         $.ajax({
-            url: '/api/book/category',
+            url: '/api/books/categories',
             method: 'GET',
             dataType: 'json',
             success: function(response) {
@@ -477,7 +477,7 @@ $(document).ready(function() {
   		
         if (confirm('정말로 삭제하시겠습니까?')) {
             $.ajax({
-                url: '/api/book/' + book_id, 
+                url: '/api/books/' + book_id, 
                 method: 'DELETE', 
                 success: function(response) {
                     alert('상품이 성공적으로 삭제되었습니다.');

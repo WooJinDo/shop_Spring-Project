@@ -297,7 +297,7 @@ $(document).ready(function() {
     
     function loadCartList() {
         $.ajax({
-            url: '/api/cart',
+            url: '/api/carts',
             method: 'GET',
             dataType: 'json',		// 응답 데이터 타입 (json, xml 등) - 서버가 보내온 응답을 어떻게 처리할지를 정의
             success: function(response) {
@@ -479,7 +479,7 @@ $(document).ready(function() {
     /* 장바구니 수량 업데이트 */
     function updateCartCount(cartId, count) {
         $.ajax({
-            url: '/api/cart/' + cartId + '?count=' + count,
+            url: '/api/carts/' + cartId + '?count=' + count,
             method: 'PUT',
             success: function() {
                 loadCartList();
@@ -525,7 +525,7 @@ $(document).ready(function() {
             });
             
             $.ajax({
-                url: '/api/cart/selected',
+                url: '/api/carts',
                 method: 'DELETE',
                 contentType: 'application/json',	// 콘텐츠 타입을 JSON으로 설정 - 클라이언트(브라우저)에서 서버로 보내는 데이터의 형식	
                 data: JSON.stringify(cartIds),		// 직렬화된 데이터를 JSON 형식으로 변환
