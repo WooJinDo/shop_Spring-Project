@@ -152,6 +152,10 @@ public class MemberServiceImpl implements MemberService {
 	        if (!email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
 	            throw new RuntimeException("유효하지 않은 이메일 형식입니다.");
 	        }
+	        // 1-1. 이메일 중복 검사
+	        if (memberMapper.checkDuplicateEmailForRegister(email.trim()) > 0) {
+	            throw new RuntimeException("이미 사용 중인 이메일입니다.");
+	        }
 	        
 	        // 2. 인증번호 생성
 			Random random = new Random();
@@ -185,7 +189,7 @@ public class MemberServiceImpl implements MemberService {
 	             throw new RuntimeException("인증 메일 발송에 실패했습니다. 잠시 후 다시 시도해주세요.");
 	        }
 	        
-			return MemberDto.MemberEmailChkResponse.from(String.valueOf(chkNum));
+			return MemberDto.MemberEmailChkResponse.from(chkNum);
 			
 		} catch (RuntimeException e) {
 	        log.error("이메일 인증 처리 실패 - email: " + email + ", message: " + e.getMessage());

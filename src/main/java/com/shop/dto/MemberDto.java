@@ -107,9 +107,9 @@ public class MemberDto {
 	@Getter @Setter
 	@Builder
 	public static class MemberEmailChkResponse{
-		private String emailNum;
+		private int emailNum;
 		
-		public static MemberEmailChkResponse from(String emailNum) {
+		public static MemberEmailChkResponse from(int emailNum) {
 			return MemberEmailChkResponse.builder()
 					.emailNum(emailNum)
 					.build();
