@@ -30,7 +30,7 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/images")
 public class ApiImageUploadController {
 	
 	@Autowired
@@ -43,7 +43,7 @@ public class ApiImageUploadController {
 	private long maxFileSize;
     
 	// @RequestParam - 파일처리 또는 요청이 json이 아닐 때
-    @PostMapping("/editor/upload")
+    @PostMapping("/editor")
     public Map<String, Object> uploadEditorImage(@RequestParam("upload") MultipartFile file, 
     											@RequestParam("type") String editorType,
                                                HttpServletRequest request) {
@@ -91,7 +91,7 @@ public class ApiImageUploadController {
     }
     
     // 관리자 - 파일 다운로드
- 	@GetMapping("/download/{imageId}")
+ 	@GetMapping("/{imageId}/download")
  	public ResponseEntity<Resource> downloadImage(@PathVariable Long imageId) {
  		log.info("**파일 다운로드 처리**");
  	    try {
@@ -115,8 +115,8 @@ public class ApiImageUploadController {
  	}
  	
 	// 관리자 - 이미지 삭제 처리 및 썸네일 재설정
-	@DeleteMapping("/image/{imageId}")
-	public ResponseEntity<?> deletekImage(@PathVariable("imageId") Long imageId) throws Exception {
+	@DeleteMapping("/{imageId}")
+	public ResponseEntity<?> deleteImage(@PathVariable("imageId") Long imageId) throws Exception {
 		log.info("**이미지 삭제 및 썸네일 재설정 처리**");
 		
 		try {

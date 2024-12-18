@@ -30,7 +30,7 @@ import lombok.extern.log4j.Log4j;
 
 @RestController
 @Log4j
-@RequestMapping("/api/book")
+@RequestMapping("/api/books")
 public class ApiBookController {
 	
 	@Value("${upload.max.size}")  // 10MB가 기본값
@@ -45,7 +45,7 @@ public class ApiBookController {
 	/* 
 	 * 전체 카테고리 목록 조회 
 	 */
-	@GetMapping("/category")
+	@GetMapping("/categories")
 	public ResponseEntity<?> bookCategoryList() throws Exception {
 		log.info("**전체 카테고리 조회 처리**");
 		
@@ -73,7 +73,7 @@ public class ApiBookController {
     /*
      * 특정 계층(tier)의 카테고리 목록 조회
      */
-    @GetMapping("/category/tier/{tier}")
+    @GetMapping("/categories/tier/{tier}")
     public ResponseEntity<?> selectCategoriesByTier(@PathVariable("tier") int tier) throws Exception {
     	log.info("**계층별 카테고리 조회 - tier: " + tier);
         
@@ -109,7 +109,7 @@ public class ApiBookController {
     /*
      * 특정 카테고리의 하위 카테고리 목록 조회
      */
-    @GetMapping("/category/sub/{parentCode}")
+    @GetMapping("/categories/{parentCode}/subcategories")
     public ResponseEntity<?> selectSubCategoryList(@PathVariable("parentCode") String parentCode) throws Exception {
         log.info("**하위 카테고리 조회 - parentCode: " + parentCode);
         
@@ -145,7 +145,7 @@ public class ApiBookController {
     /*
      * 카테고리별 상품리스트 조회
      */
-    @GetMapping("/category/{categoryCode}")
+    @GetMapping("/categories/{categoryCode}/books")
     public ResponseEntity<?> selectBooksByCategory(
             @PathVariable("categoryCode") String categoryCode,
             BookDto.BookListCatetorySearchRequest request) throws Exception {

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,6 +28,7 @@ import lombok.extern.log4j.Log4j;
 
 @RestController
 @Log4j
+@RequestMapping("/api/members")
 public class ApiMemberController {
 	
 	@Autowired
@@ -35,7 +37,7 @@ public class ApiMemberController {
 	/* 
 	 * 사용자 - 회원 등록
 	 */
-	@PostMapping("/api/register")
+	@PostMapping
 	public ResponseEntity<?> memberRegister(@RequestBody MemberDto.MemberRequest request) 
 			throws Exception {
 		log.info("**회원 등록 처리**");
@@ -53,31 +55,27 @@ public class ApiMemberController {
 	}
 	
 	/* 
-	 * 사용자 - 회원 중복 확인
+	 * 사용자 - 회원 아이디 중복 확인
 	 */
-	@PostMapping("/api/memberIdChk")
-	public ResponseEntity<?> memberIdChk(@RequestBody MemberDto.MemberRequest request) 
+	@GetMapping("/{id}/exists")
+	public ResponseEntity<?> memberIdExists(@PathVariable("id") String userId) 
 			throws Exception {
-		log.info("**회원 중복 확인 처리**");
-		log.info("회원 아이디 : " + request.getUser_id().trim());
-		
-		MemberDto.MemberIdChkResponse idChk = memberService.memberIdChk(request.getUser_id().trim());
+		log.info("회원 아이디 중복 확인: " + userId.trim());		
+		MemberDto.MemberIdChkResponse idChk = memberService.memberIdChk(userId.trim());
 		
 		return ResponseEntity.status(HttpStatus.OK).body(idChk);
 	}
 	
 	/* 
-	 * 사용자 - 이메일 인증
+	 * 사용자 - 이메일 인증번호 발송
 	 */
-	@GetMapping("/api/memberEmailChk")
-	public ResponseEntity<?> memberEmailChk(@RequestParam String email) 
+	@PostMapping("/verification-codes")
+	public ResponseEntity<?> sendVerificationCode(@RequestParam String email) 
 			throws Exception {
-		log.info("**이메일 인증 처리**");
-		log.info("회원 이메일 : " + email.trim());
-		
+		log.info("이메일 인증번호 발송: " + email.trim());
 		try {
             MemberDto.MemberEmailChkResponse emailNum = memberService.memberEmailChk(email.trim());
-            return ResponseEntity.status(HttpStatus.OK).body(emailNum);
+            return ResponseEntity.status(HttpStatus.CREATED).body(emailNum);
             
         } catch (RuntimeException e) {
             return ResponseEntity
@@ -90,34 +88,41 @@ public class ApiMemberController {
 	/* 
 	 * 관리자 - 회원 리스트 조회 
 	 */
-	@GetMapping("/api/member")
+	@GetMapping
 	public ResponseEntity<?> memberkList(MemberDto.MemberSearchRequest request) throws Exception {
 		log.info("**회원 리스트 조회 처리**");
-		
-		int totalItems = memberService.selectTotalCount(request);	// 전체 수
-		// 페이징 정보 계산
-		PagingUtil pagingUtil = new PagingUtil(request.getCurrentPage(), request.getItemsPerPage(), totalItems);
-		
-		// 페이징된 회원 리스트
-		request.setOffset(pagingUtil.getOffset());
-		request.setLimit(pagingUtil.getLimit());
-		List<MemberDto.MemberListResponse> memberList = memberService.selectMemberList(request);
-		
-		Map<String, Object> response = new HashMap<>();
-		response.put("totalCount", totalItems);
-		response.put("paging", pagingUtil);
-		response.put("memberList", memberList);
-		
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		try {
+			int totalItems = memberService.selectTotalCount(request);	// 전체 수
+			// 페이징 정보 계산
+			PagingUtil pagingUtil = new PagingUtil(request.getCurrentPage(), request.getItemsPerPage(), totalItems);
+			
+			// 페이징된 회원 리스트
+			request.setOffset(pagingUtil.getOffset());
+			request.setLimit(pagingUtil.getLimit());
+			List<MemberDto.MemberListResponse> memberList = memberService.selectMemberList(request);
+			
+			Map<String, Object> response = new HashMap<>();
+			response.put("totalCount", totalItems);
+			response.put("paging", pagingUtil);
+			response.put("memberList", memberList);
+			
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+            
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .body(e.getMessage());
+        }
 	}
 	
 	/* 
 	 * 관리자 - 회원 상세 조회 
 	 */
-	@GetMapping("/api/member/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<?> memberDetail(@PathVariable("id") String userId, Model model) 
 			throws Exception {
-		log.info("**회원 상세 조회 처리**");
+		log.info("회원 상세 조회: " + userId);
 		
         try {
             MemberDto.MemberDetailResponse result = memberService.selectMemberDetail(userId);
@@ -134,11 +139,10 @@ public class ApiMemberController {
 	/* 
 	 * 관리자 - 회원 정보 수정 
 	 */
-	@PutMapping("/api/member/{id}")
+	@PutMapping("/{id}")
 	public ResponseEntity<?> memberUpdate(@PathVariable("id") String userId,
 	        @RequestBody MemberDto.MemberUpdateRequest request) throws Exception {
-		
-		log.info("**회원 정보 수정 처리**");
+		log.info("회원 정보 수정: " + userId);
 	    try {
 	        // 경로 변수의 userId와 요청 본문의 userId가 일치하는지 확인
 	        if (!userId.equals(request.getUser_id())) {
@@ -162,10 +166,10 @@ public class ApiMemberController {
 	/* 
 	 * 관리자 - 회원 탈퇴 처리 (논리적 삭제)
 	 */
-	@DeleteMapping("/api/member/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<?> memberDelete(@PathVariable("id") String userId) 
 			throws Exception {
-		log.info("**상품 삭제 처리**");
+		log.info("회원 탈퇴 처리: " + userId);
 	    try {
 	        memberService.deleteMember(userId);
 	        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

@@ -25,7 +25,7 @@ import lombok.extern.log4j.Log4j;
 
 @RestController
 @Log4j
-@RequestMapping("/api/cart")
+@RequestMapping("/api/carts")
 public class ApiCartController {
 	
 	@Autowired
@@ -144,7 +144,7 @@ public class ApiCartController {
     /* 
 	 * 장바구니 삭제
 	 */
-    @DeleteMapping("/selected")
+    @DeleteMapping
     public ResponseEntity<?> deleteSelectedItems(@RequestBody List<Long> cartIds, 
     		HttpSession session) {
         try {
