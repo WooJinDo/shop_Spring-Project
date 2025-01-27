@@ -1,7 +1,9 @@
 # 📚 도서 쇼핑몰 프로젝트
 
 ## 🔍 프로젝트 소개
- Spring MVC 아키텍처를 기반으로 REST API 방식 도서 쇼핑몰 웹 애플리케이션으로, 관리자와 사용자 기능을 구분하여 도서 판매 및 관리 기능을 제공합니다.
+본 프로젝트는 Spring MVC 기반의 도서 쇼핑몰 웹 애플리케이션으로, 전통적인 MVC 패턴에 부분적인 REST API를 접목하여 구현했습니다. 
+서버 측에서 JSP를 활용한 SSR(Server Side Rendering)을 통해 초기 페이지를 렌더링하며, 
+jQuery와 Ajax를 활용한 비동기 통신을 통해 부분적으로 동적 데이터를 처리하여 사용자 경험을 개선했습니다.
 
 ## ⚙️ 개발 환경
 - **Backend**: Java 8, Spring MVC, Oracle DB, MyBatis
