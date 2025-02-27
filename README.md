@@ -484,7 +484,6 @@ function modalAuthorList(page) {
 - 체계적인 예외 처리와 트랜잭션 관리
 
 ### 개선사항
-- JUnit을 활용한 단위 테스트 코드 작성
 - 코드 리팩토링
 - 전역 예외 처리 (@ControllerAdvice) 를 컨트롤러 계층에서 전역적으로 수행
 - 미진한 기능 추가적 개발
